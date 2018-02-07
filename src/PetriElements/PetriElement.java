@@ -1,7 +1,5 @@
 package PetriElements;
 
-import java.awt.*;
-
 public interface PetriElement {
     //Point getPos();
     //void setPos(int x, int y);

@@ -1,6 +1,5 @@
 package PetriElements;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class PlaceCore implements PetriElement{

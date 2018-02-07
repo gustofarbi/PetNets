@@ -12,10 +12,7 @@ public class MainFrame extends JFrame {
         MenuBar.makeMenuBar(this);
         ToolBar.makeToolBar(this);
         MessageBar.makeMessageBar(this);
-
-
-    }
-    void setFrame(){
+        MainPanel panel = new MainPanel(this);
         try{
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         }catch (Exception e){

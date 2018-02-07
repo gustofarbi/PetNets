@@ -7,13 +7,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class Place {
+public class Place extends JComponent implements GraphicPetriElement {
     private static final int size = 60;
     private int xPos, yPos;
     private PlaceCore core;
     private String name;
     private BufferedImage bi;
+    private static int counter = 0;
     public Place(int x, int y){
+        name = "P: " + ++counter;
         xPos = x;
         yPos = y;
         core = new PlaceCore();
@@ -32,10 +34,10 @@ public class Place {
         Graphics2D g = bi.createGraphics();
         g.setFont(new Font("Arial", Font.PLAIN, 18));
         g.setColor(Color.black);
-        g.drawString(name, 13,20);
+        g.drawString(name, 12,23);
         g.setFont(new Font("Arial", Font.PLAIN, 12));
-        g.drawString("t: " + core.getTokens(), 13, 33);
-        g.drawString("C: " + core.getCapacity(), 13, 45);
+        g.drawString("t: " + core.getTokens(), 12, 36);
+        g.drawString("C: " + (core.getCapacity() > 99 ? "k.A." : core.getCapacity()), 12, 48);
     }
 
     public void draw(Graphics g){
