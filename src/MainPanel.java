@@ -105,6 +105,7 @@ public class MainPanel extends JPanel{
         }
         @Override
         public void mouseReleased(MouseEvent e){
+            FlowRelation
             arr = null;
             repaint();
         }
