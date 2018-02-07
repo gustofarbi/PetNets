@@ -23,7 +23,7 @@ public class MainPanel extends JPanel{
         this.panel = panel;
         this.setLayout(null);
         this.setBackground(Color.white);
-        this.addMouseListener(new);
+        //this.addMouseListener(new);
     }
     @Override
     public void paintComponent(Graphics g){
@@ -51,6 +51,9 @@ public class MainPanel extends JPanel{
     }
     public void addPlace(int x, int y){
         Place p = new Place(x,y);
+
+    }
+    public void addTransition(int x, int y){
 
     }
 }
