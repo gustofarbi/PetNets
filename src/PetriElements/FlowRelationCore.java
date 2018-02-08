@@ -3,15 +3,17 @@ package PetriElements;
 import javax.swing.*;
 
 public class FlowRelationCore {
-    PetriElement from, to;
-    int weight;
+    private PetriElement from, to;
+    private int weight;
+    private static int counter = 0;
+
     public FlowRelationCore(PetriElement start, PetriElement end){
         from = start;
         to = end;
-        //weight = JOptionPane.showInputDialog("Adjust weight:", null);
+        from.addFromThis(to);
+        to.addToThis(from);
+        weight = Integer.parseInt(JOptionPane.showInputDialog("Adjust weight:", null));
+        counter++;
     }
 
-    public static void main(String[] args) {
-        new FlowRelationCore(new PlaceCore(),new PlaceCore());
-    }
 }

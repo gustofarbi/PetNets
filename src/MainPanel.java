@@ -1,7 +1,4 @@
-import PetriElements.FlowRelation;
-import PetriElements.GraphicPetriElement;
-import PetriElements.Place;
-import PetriElements.Transition;
+import PetriElements.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +15,7 @@ public class MainPanel extends JPanel{
     MainPanel panel;
     Arrow arr;
     Point arrowFrom;
+    GraphicPetriElement from;
 
     public MainPanel(MainFrame frame){
         places = new ArrayList<>();
@@ -40,6 +38,9 @@ public class MainPanel extends JPanel{
         for(Transition t: transitions){
             t.draw(g);
             t.setBounds(t.getPos().x-30, t.getPos().y-30, 60,60);
+        }
+        for(FlowRelation f: flowRelations){
+            f.draw(g);
         }
         if(arr != null) {
             arr.paintComponent(g);
@@ -82,7 +83,6 @@ public class MainPanel extends JPanel{
                     arr.setArrow(new Point(x,y));
                 }
                 repaint();
-                System.out.println("Arrow made");
             }else {
                 GraphicPetriElement g = (GraphicPetriElement) e.getSource();
                 Point offset = getLocationOnScreen();
@@ -97,6 +97,7 @@ public class MainPanel extends JPanel{
         @Override
         public void mousePressed(MouseEvent e){
             if(frame.getToggled().equals("fr")){
+                from = (GraphicPetriElement)e.getSource();
                 Point offset = getLocationOnScreen();
                 int x = e.getXOnScreen()-offset.x;
                 int y = e.getYOnScreen()-offset.y;
@@ -105,10 +106,21 @@ public class MainPanel extends JPanel{
         }
         @Override
         public void mouseReleased(MouseEvent e){
-            FlowRelation
+            System.out.println("Mouse released");
+            System.out.println(from.getClass());
+            System.out.println(e.getSource().getClass());
+            if(frame.getToggled().equals("fr") && from.getClass() == e.getSource().getClass()){
+                addFlowRelation(from, (GraphicPetriElement)e.getSource());
+                System.out.println("Flow relation added");
+            }
             arr = null;
-            repaint();
         }
+    }
+    public void addFlowRelation(GraphicPetriElement from, GraphicPetriElement to){
+        FlowRelation f = new FlowRelation(from, to);
+        flowRelations.add(f);
+        this.add(f);
+        System.out.println("Flow relation added");
     }
     public void addPlace(int x, int y){
         Place p = new Place(x,y);

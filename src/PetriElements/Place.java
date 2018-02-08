@@ -24,6 +24,7 @@ public class Place extends JComponent implements GraphicPetriElement {
     public void setName(String nName){name = nName; }
     public Point getPos(){ return new Point(xPos,yPos); }
     public void setPos(int x, int y){ xPos = x;yPos = y; }
+    public PetriElement getCore(){return core;}
     private void setImage(){
         try{
             bi = ImageIO.read(new File("ressources/place.png"));
