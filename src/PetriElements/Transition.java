@@ -27,12 +27,6 @@ public class Transition extends JComponent implements GraphicPetriElement {
     public TransitionCore getCore(){
         return core;
     }
-    public void addToThis(PetriElement p){
-        core.addToThis(p);
-    }
-    public void addFromThis(PetriElement p){
-        core.addFromThis(p);
-    }
     private void setImage(){
         try{
             bi = ImageIO.read(new File("ressources/transition.png"));

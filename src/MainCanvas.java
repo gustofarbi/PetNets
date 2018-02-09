@@ -7,17 +7,18 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 
-public class MainPanel extends JPanel{
+public class MainCanvas extends JPanel{
     ArrayList<Place> places;
     ArrayList<Transition> transitions;
     ArrayList<FlowRelation> flowRelations;
     MainFrame frame;
-    MainPanel panel;
+    MainCanvas panel;
+    JPanel foreground;
     Arrow arr;
     Point arrowFrom;
     GraphicPetriElement from;
 
-    public MainPanel(MainFrame frame){
+    public MainCanvas(MainFrame frame){
         places = new ArrayList<>();
         transitions = new ArrayList<>();
         flowRelations = new ArrayList<>();
@@ -26,6 +27,17 @@ public class MainPanel extends JPanel{
         this.setLayout(null);
         this.setBackground(Color.white);
         this.addMouseListener(new PanelMouseListener());
+        foreground = new JPanel(null);
+        foreground.setSize(this.getSize());
+        foreground.setBackground(Color.red);
+        foreground.setOpaque(false);
+        foreground.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Foreground clicked");
+            }
+        });
+        this.add(foreground);
         frame.c.add(this);
     }
     @Override
@@ -65,8 +77,29 @@ public class MainPanel extends JPanel{
         }
         @Override
         public void mouseReleased(MouseEvent e){
-            arr = null;
-            repaint();
+            if(arr != null){
+                arr = null;
+                repaint();
+            }
+            Point offset = getLocationOnScreen();
+            int x = e.getXOnScreen()-offset.x;
+            int y = e.getYOnScreen()-offset.y;
+
+            boolean jop = false;
+
+            for(Place p: places){
+                System.out.println("Bounds: " + p.getBounds());
+                System.out.println("Click:  " + x + ":" + y);
+                if(p.getBounds().contains(x, y))
+                    jop = true;
+            }
+            for(Transition t: transitions){
+                if(t.contains(x,y))
+                    jop = true;
+            }
+            if(jop){
+                System.out.println("Mouse released over object");
+            }
         }
     }
     class GraphicElementMouseMotionListener extends MouseMotionAdapter{
@@ -106,15 +139,13 @@ public class MainPanel extends JPanel{
         }
         @Override
         public void mouseReleased(MouseEvent e){
-            System.out.println("Mouse released");
-            System.out.println(from.getClass());
-            System.out.println(e.getSource().getClass());
-            if(frame.getToggled().equals("fr") && from.getClass() == e.getSource().getClass()){
+            if(frame.getToggled().equals("fr") && from.getClass() != e.getSource().getClass()){
                 addFlowRelation(from, (GraphicPetriElement)e.getSource());
-                System.out.println("Flow relation added");
             }
             arr = null;
+            repaint();
         }
+
     }
     public void addFlowRelation(GraphicPetriElement from, GraphicPetriElement to){
         FlowRelation f = new FlowRelation(from, to);
@@ -128,7 +159,7 @@ public class MainPanel extends JPanel{
         p.addMouseListener(new GraphicElementMouseListener());
         places.add(p);
         this.add(p);
-        System.out.println("Place added");
+        System.out.println("Place added@ " + x + ":" + y);
     }
     public void addTransition(int x, int y){
         Transition t = new Transition(x,y);
@@ -154,5 +185,10 @@ public class MainPanel extends JPanel{
             g.setColor(Color.black);
             g.drawLine(from.x,from.y,to.x,to.y);
         }
+    }
+    @Override
+    public Dimension getSize(){
+        System.out.println("size of frame" + frame.getSize());
+        return frame.getSize();
     }
 }
