@@ -22,12 +22,12 @@ public class Place extends JComponent implements GraphicPetriElement {
     }
     public String getName(){ return name; }
     public void setName(String nName){name = nName; }
-    public Point getPos(){ return new Point(xPos,yPos); }
-    public void setPos(int x, int y){ xPos = x;yPos = y; }
-    public PetriElement getCore(){return core;}
+    @Override public Point getPos(){ return new Point(xPos,yPos); }
+    @Override public void setPos(int x, int y){ xPos = x;yPos = y; }
+    @Override public PetriElement getCore(){return core;}
     private void setImage(){
         try{
-            bi = ImageIO.read(new File("ressources/place.png"));
+            bi = ImageIO.read(getClass().getResource("/ressources/images/place.png"));
         }
         catch(IOException e){
             e.printStackTrace();
@@ -45,4 +45,5 @@ public class Place extends JComponent implements GraphicPetriElement {
         setImage();
         g.drawImage(bi, xPos-(size/2), yPos-(size/2), null);
     }
+    @Override public void paintComponents(Graphics g){draw(g);}
 }

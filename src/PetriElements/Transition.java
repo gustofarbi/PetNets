@@ -22,14 +22,17 @@ public class Transition extends JComponent implements GraphicPetriElement {
     }
     public String getname(){return name;}
     public void setName(String nName){name = nName;}
-    public Point getPos(){return new Point(xPos,yPos);}
-    public void setPos(int x, int y){xPos = x; yPos = y;}
-    public TransitionCore getCore(){
+    @Override public Point getPos(){return new Point(xPos,yPos);}
+    @Override public void setPos(int x, int y){
+        xPos = x;
+        yPos = y;
+    }
+    @Override public TransitionCore getCore(){
         return core;
     }
     private void setImage(){
         try{
-            bi = ImageIO.read(new File("ressources/transition.png"));
+            bi = ImageIO.read(getClass().getResource("/ressources/images/transition.png"));
         }
         catch(IOException e){
             e.printStackTrace();
@@ -43,4 +46,5 @@ public class Transition extends JComponent implements GraphicPetriElement {
         setImage();
         g.drawImage(bi, xPos-(size/2), yPos-(size/2), null);
     }
+    @Override public void paintComponent(Graphics g){draw(g);}
 }

@@ -3,12 +3,14 @@ package PetriElements;
 import java.util.ArrayList;
 
 public class TransitionCore implements PetriElement {
-    ArrayList<PetriElement> fromThis;
-    ArrayList<PetriElement> toThis;
+    ArrayList<FlowRelation> fromThis;
+    ArrayList<FlowRelation> toThis;
     TransitionCore(){
         fromThis = new ArrayList<>();
         toThis = new ArrayList<>();
     }
-    public void addToThis(PetriElement p){toThis.add(p);}
-    public void addFromThis(PetriElement p){fromThis.add(p);}
+    @Override public void addToThis(FlowRelation p){toThis.add(p);}
+    @Override public void addFromThis(FlowRelation p){fromThis.add(p);}
+    @Override public ArrayList<FlowRelation> getFromThis(){return fromThis;}
+    @Override public ArrayList<FlowRelation> getToThis() { return toThis;}
 }
