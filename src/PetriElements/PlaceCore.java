@@ -1,12 +1,16 @@
 package PetriElements;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 public class PlaceCore implements PetriElement{
-    int tokens = 1, capacity = Integer.MAX_VALUE;
-    ArrayList<FlowRelation> fromThis;
-    ArrayList<FlowRelation> toThis;
-    PlaceCore(){
+    private int tokens = 1, capacity = Integer.MAX_VALUE;
+    @NotNull
+    private ArrayList<FlowRelation> fromThis;
+    @NotNull
+    private ArrayList<FlowRelation> toThis;
+    public PlaceCore(){
         fromThis = new ArrayList<>();
         toThis = new ArrayList<>();
     }
@@ -30,6 +34,8 @@ public class PlaceCore implements PetriElement{
     }
     @Override public void addToThis(FlowRelation p){toThis.add(p);}
     @Override public void addFromThis(FlowRelation p){fromThis.add(p);}
-    @Override public ArrayList<FlowRelation> getFromThis(){return fromThis;}
+    @NotNull
+    @Override public ArrayList<FlowRelation> getFromThis() { return fromThis; }
+    @NotNull
     @Override public ArrayList<FlowRelation> getToThis(){return toThis;}
 }

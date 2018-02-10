@@ -1,3 +1,5 @@
+import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -23,7 +25,7 @@ public class ToolBar {
         //Initialisierungen von ToggleButtons
         placeToggleButton = new JToggleButton(new Icon() {
             @Override
-            public void paintIcon(Component c, Graphics g, int x, int y) {
+            public void paintIcon(Component c, @NotNull Graphics g, int x, int y) {
                 g.setColor(Color.BLACK);
                 g.fillOval(offsetLeft, offsetTop,getIconWidth(),getIconHeight());
                 g.setColor(Color.WHITE);
@@ -42,7 +44,7 @@ public class ToolBar {
         });
         transitionToggleButton = new JToggleButton(new Icon(){
             @Override
-            public void paintIcon(Component c, Graphics g, int x, int y) {
+            public void paintIcon(Component c, @NotNull Graphics g, int x, int y) {
                 int narrowing = 5;
                 g.setColor(Color.BLACK);
                 g.fillRect(offsetLeft + narrowing, offsetTop, getIconWidth()-(2*narrowing)+2, getIconHeight());
@@ -62,11 +64,13 @@ public class ToolBar {
         });
         frToggleButton = new JToggleButton(new Icon() {
             @Override
-            public void paintIcon(Component c, Graphics g, int x, int y) {
-                int xCoords[] = {offsetLeft,getIconWidth(), getIconWidth(), getIconWidth(), getIconWidth()-5};
-                int yCoords[] = {offsetTop,getIconHeight(), getIconHeight()-5, getIconHeight(), getIconHeight()};
-                g.setColor(Color.BLACK);
-                g.drawPolyline(xCoords, yCoords, xCoords.length);
+            public void paintIcon(Component c, @NotNull Graphics g, int x, int y) {
+                int xCoords[] = {offsetLeft,getIconWidth(), getIconWidth(), getIconWidth(), getIconWidth()-10};
+                int yCoords[] = {offsetTop,getIconHeight(), getIconHeight()-10, getIconHeight(), getIconHeight()};
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setStroke(new BasicStroke(1.5f));
+                g2.setColor(Color.BLACK);
+                g2.drawPolyline(xCoords, yCoords, xCoords.length);
             }
 
             @Override

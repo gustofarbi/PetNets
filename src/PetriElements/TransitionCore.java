@@ -3,9 +3,9 @@ package PetriElements;
 import java.util.ArrayList;
 
 public class TransitionCore implements PetriElement {
-    ArrayList<FlowRelation> fromThis;
-    ArrayList<FlowRelation> toThis;
-    TransitionCore(){
+    private ArrayList<FlowRelation> fromThis;
+    private ArrayList<FlowRelation> toThis;
+    public TransitionCore(){
         fromThis = new ArrayList<>();
         toThis = new ArrayList<>();
     }

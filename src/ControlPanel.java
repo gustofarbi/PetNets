@@ -1,15 +1,17 @@
 import PetriElements.FlowRelation;
 import PetriElements.GraphicPetriElement;
-import PetriElements.PetriElement;
+import PetriElements.Place;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
-public class ControlPanel extends JPanel{
+class ControlPanel extends JPanel{
     private MainCanvas canvas;
+    @Nullable
     private GraphicPetriElement draggedElement, FlowRelationFrom;
 
     ControlPanel(MainCanvas canvas){
@@ -23,12 +25,16 @@ public class ControlPanel extends JPanel{
 
     class ControlPanelMouseListener extends MouseAdapter{
         @Override
-        public void mouseClicked(MouseEvent e){
+        public void mouseClicked(@NotNull MouseEvent e){
             GraphicPetriElement foo = null;
             try{
                 foo = canvas.findElememnt(e.getPoint());
             }catch(Exception err){
                 System.out.println(err.getMessage());
+            }
+            if(foo != null && foo.getClass() == Place.class && e.getClickCount() == 2){
+                new PlaceContextMenu((Place)foo);
+                canvas.repaint();
             }
             if(!canvas.getToggled().isEmpty() && foo == null){
                 switch(canvas.getToggled()){
@@ -45,25 +51,23 @@ public class ControlPanel extends JPanel{
             }
         }
         @Override
-        public void mousePressed(MouseEvent e){
+        public void mousePressed(@NotNull MouseEvent e){
             if(canvas.getToggled().equals("fr")){
                 try{
                     FlowRelationFrom = canvas.findElememnt(e.getPoint());
                 }catch (Exception err){
                     System.out.println(err.getMessage());
                 }
-                if(FlowRelationFrom != null){
+                if(FlowRelationFrom != null) {
                     canvas.setArrowFrom(e.getPoint());
-                    System.out.println("FlowRealtionFrom added");
                 }
             }
         }
         @Override
-        public void mouseReleased(MouseEvent e){
+        public void mouseReleased(@NotNull MouseEvent e){
             if(canvas.getToggled().equals("fr") && FlowRelationFrom != null){
-                GraphicPetriElement FlowRelationTo;
                 try{
-                    FlowRelationTo = canvas.findElememnt(e.getPoint());
+                    GraphicPetriElement FlowRelationTo = canvas.findElememnt(e.getPoint());
                     if(FlowRelationTo.getClass() != FlowRelationFrom.getClass())
                         addFlowRelation(FlowRelationFrom, FlowRelationTo);
                 }catch(Exception err){
@@ -79,7 +83,7 @@ public class ControlPanel extends JPanel{
     }
     class ControlPanelMouseMotionListener extends MouseMotionAdapter{
         @Override
-        public void mouseDragged(MouseEvent e){
+        public void mouseDragged(@NotNull MouseEvent e){
             if(canvas.getToggled().equals("fr")){
                 canvas.setArrow(e.getX(),e.getY());
                 canvas.repaint();
@@ -103,16 +107,13 @@ public class ControlPanel extends JPanel{
         }
     }
 
-
-
-
-    public void addFlowRelation(GraphicPetriElement from, GraphicPetriElement to){
+    private void addFlowRelation(@NotNull GraphicPetriElement from, @NotNull GraphicPetriElement to){
         canvas.addFlowRelation(from, to);
     }
-    public void addPlace(int x, int y){
+    private void addPlace(int x, int y){
         canvas.addPlace(x,y);
     }
-    public void addTransition(int x, int y){
+    private void addTransition(int x, int y){
         canvas.addTransition(x,y);
     }
 }

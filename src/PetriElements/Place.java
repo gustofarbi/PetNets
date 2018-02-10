@@ -1,10 +1,11 @@
 package PetriElements;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 public class Place extends JComponent implements GraphicPetriElement {
@@ -22,6 +23,7 @@ public class Place extends JComponent implements GraphicPetriElement {
     }
     public String getName(){ return name; }
     public void setName(String nName){name = nName; }
+    @NotNull
     @Override public Point getPos(){ return new Point(xPos,yPos); }
     @Override public void setPos(int x, int y){ xPos = x;yPos = y; }
     @Override public PetriElement getCore(){return core;}
@@ -41,9 +43,9 @@ public class Place extends JComponent implements GraphicPetriElement {
         g.drawString("C: " + (core.getCapacity() > 99 ? "k.A." : core.getCapacity()), 12, 48);
     }
 
-    public void draw(Graphics g){
+    public void draw(@NotNull Graphics g){
         setImage();
         g.drawImage(bi, xPos-(size/2), yPos-(size/2), null);
     }
-    @Override public void paintComponents(Graphics g){draw(g);}
+    @Override public void paintComponents(@NotNull Graphics g){draw(g);}
 }

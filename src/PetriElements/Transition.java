@@ -1,10 +1,11 @@
 package PetriElements;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 public class Transition extends JComponent implements GraphicPetriElement {
@@ -22,6 +23,7 @@ public class Transition extends JComponent implements GraphicPetriElement {
     }
     public String getname(){return name;}
     public void setName(String nName){name = nName;}
+    @NotNull
     @Override public Point getPos(){return new Point(xPos,yPos);}
     @Override public void setPos(int x, int y){
         xPos = x;
@@ -42,9 +44,9 @@ public class Transition extends JComponent implements GraphicPetriElement {
         g.setColor(Color.black);
         g.drawString(name, 12, 23);
     }
-    public void draw(Graphics g){
+    public void draw(@NotNull Graphics g){
         setImage();
         g.drawImage(bi, xPos-(size/2), yPos-(size/2), null);
     }
-    @Override public void paintComponent(Graphics g){draw(g);}
+    @Override public void paintComponent(@NotNull Graphics g){draw(g);}
 }

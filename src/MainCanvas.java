@@ -1,38 +1,43 @@
 import PetriElements.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class MainCanvas extends JPanel{
-    ArrayList<Place> places;
-    ArrayList<Transition> transitions;
-    ArrayList<FlowRelation> flowRelations;
-    MainFrame frame;
-    MainCanvas panel;
-    ControlPanel foreground;
-    Arrow arr;
-    Point arrowFrom;
-    GraphicPetriElement from;
+    private ArrayList<Place> places;
+    private ArrayList<Transition> transitions;
+    private ArrayList<FlowRelation> flowRelations;
+    private MainFrame frame;
+    private ControlPanel foreground;
+    @Nullable
+    private Arrow arr;
+    @Nullable
+    private Point arrowFrom;
 
-    public MainCanvas(MainFrame frame){
+    MainCanvas(MainFrame frame){
         places = new ArrayList<>();
         transitions = new ArrayList<>();
         flowRelations = new ArrayList<>();
         this.frame = frame;
-        this.panel = this;
         this.setLayout(null);
         this.setBackground(Color.white);
         foreground = new ControlPanel(this);
         this.add(foreground);
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                foreground.setSize(getWidth(), getHeight());
+            }
+        });
         frame.c.add(this);
     }
 
     @Override
-    public void paintComponent(Graphics g){
+    public void paintComponent(@NotNull Graphics g){
         super.paintComponent(g);
         for(FlowRelation f: flowRelations){
             f.draw(g);
@@ -49,7 +54,7 @@ public class MainCanvas extends JPanel{
             arr.paintComponent(g);
         }
     }
-    GraphicPetriElement findElememnt(Point point) throws Exception {
+    @NotNull GraphicPetriElement findElememnt(@NotNull Point point) throws Exception {
         for(Place p: places){
             if(p.getBounds().contains(point))
                 return p;
@@ -60,12 +65,21 @@ public class MainCanvas extends JPanel{
         }
         throw new Exception("No element found");
     }
-
-    public void addFlowRelation(GraphicPetriElement from, GraphicPetriElement to){
+    public boolean isDuplicate(FlowRelation f){
+        for(FlowRelation foo: flowRelations)
+            if(foo.equals(f))
+                return true;
+        return false;
+    }
+    public void addFlowRelation(@NotNull GraphicPetriElement from, @NotNull GraphicPetriElement to){
         FlowRelation f = new FlowRelation(from, to);
-        flowRelations.add(f);
-        this.add(f);
-        System.out.println("Flow relation added");
+        if(isDuplicate(f))
+            throw new RuntimeException("Flow relations already exists!");
+        else {
+            flowRelations.add(f);
+            this.add(f);
+            System.out.println("Flow relation added");
+        }
     }
     public void addPlace(int x, int y){
         Place p = new Place(x,y);
@@ -77,7 +91,7 @@ public class MainCanvas extends JPanel{
         Transition t = new Transition(x,y);
         transitions.add(t);
         this.add(t);
-        System.out.println("Transition added");
+        System.out.println("Transition added@" + x + ":" + y);
     }
 
     public String getToggled(){
@@ -90,7 +104,7 @@ public class MainCanvas extends JPanel{
             arr.setArrow(new Point(x,y));
         }
     }
-    public void setArrowFrom(Point p){
+    public void setArrowFrom(@Nullable Point p){
         arrowFrom = p;
     }
     public void eraseArrow(){
@@ -101,18 +115,20 @@ public class MainCanvas extends JPanel{
     class Arrow extends JComponent{
         Point from, to;
 
-        public Arrow(Point start, Point end){
+        Arrow(Point start, Point end){
             from = start;
             to = end;
         }
-        public void setArrow(Point end){
+        void setArrow(Point end){
             to = end;
         }
         @Override
-        public void paintComponent(Graphics g){
+        public void paintComponent(@NotNull Graphics g){
             super.paintComponent(g);
-            g.setColor(Color.black);
-            g.drawLine(from.x,from.y,to.x,to.y);
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setColor(Color.black);
+            g2.setStroke(new BasicStroke(2.0f));
+            g2.drawLine(from.x,from.y,to.x,to.y);
         }
     }
     @Override
