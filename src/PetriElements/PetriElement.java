@@ -3,8 +3,8 @@ package PetriElements;
 import java.util.ArrayList;
 
 public interface PetriElement {
-    void addFromThis(FlowRelation f);
-    void addToThis(FlowRelation f);
-    ArrayList<FlowRelation> getFromThis();
-    ArrayList<FlowRelation> getToThis();
+    void addFromThis(Arc f);
+    void addToThis(Arc f);
+    ArrayList<Arc> getFromThis();
+    ArrayList<Arc> getToThis();
 }

@@ -4,67 +4,54 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class ToolBar {
-    /*
-    private JToolBar toolBar;
-    private JToggleButton placeToggleButton;
-    private JToggleButton transitionToggleButton;
-    private JToggleButton frToggleButton;
-    */
+    static ArrayList<JToggleButton> buttons;
+    static MainFrame frame;
 
-    static void makeToolBar(MainFrame frame){
+    static void makeToolBar(MainFrame f){
+        frame = f;
         int iconSize = 40;
         int offsetLeft = 3;
         int offsetTop = 3;
         int thickness = 5;
-        JToggleButton placeToggleButton, transitionToggleButton, frToggleButton;
+        buttons = new ArrayList<>();
 
         JToolBar toolBar = new JToolBar("Tools", JToolBar.VERTICAL);
 
         //Initialisierungen von ToggleButtons
-        placeToggleButton = new JToggleButton(new Icon() {
-            @Override
-            public void paintIcon(Component c, @NotNull Graphics g, int x, int y) {
+        JToggleButton placeToggleButton = new JToggleButton(new Icon() {
+            @Override public void paintIcon(Component c, @NotNull Graphics g, int x, int y) {
                 g.setColor(Color.BLACK);
                 g.fillOval(offsetLeft, offsetTop,getIconWidth(),getIconHeight());
                 g.setColor(Color.WHITE);
                 g.fillOval(offsetLeft + thickness,offsetTop + thickness,getIconWidth() - (2*thickness), getIconHeight() - (2*thickness));
             }
-
-            @Override
-            public int getIconWidth() {
+            @Override public int getIconWidth() {
                 return iconSize;
             }
-
-            @Override
-            public int getIconHeight() {
+            @Override public int getIconHeight() {
                 return iconSize;
             }
         });
-        transitionToggleButton = new JToggleButton(new Icon(){
-            @Override
-            public void paintIcon(Component c, @NotNull Graphics g, int x, int y) {
+        JToggleButton transitionToggleButton = new JToggleButton(new Icon(){
+            @Override public void paintIcon(Component c, @NotNull Graphics g, int x, int y) {
                 int narrowing = 5;
                 g.setColor(Color.BLACK);
                 g.fillRect(offsetLeft + narrowing, offsetTop, getIconWidth()-(2*narrowing)+2, getIconHeight());
                 g.setColor(Color.WHITE);
                 g.fillRect(offsetLeft + thickness + narrowing, offsetTop + thickness, getIconWidth()-(3*narrowing)- 3, getIconHeight()-thickness- narrowing);
             }
-
-            @Override
-            public int getIconWidth() {
+            @Override public int getIconWidth() {
                 return iconSize;
             }
-
-            @Override
-            public int getIconHeight() {
+            @Override public int getIconHeight() {
                 return iconSize;
             }
         });
-        frToggleButton = new JToggleButton(new Icon() {
-            @Override
-            public void paintIcon(Component c, @NotNull Graphics g, int x, int y) {
+        JToggleButton arcToggleButton = new JToggleButton(new Icon() {
+            @Override public void paintIcon(Component c, @NotNull Graphics g, int x, int y) {
                 int xCoords[] = {offsetLeft,getIconWidth(), getIconWidth(), getIconWidth(), getIconWidth()-10};
                 int yCoords[] = {offsetTop,getIconHeight(), getIconHeight()-10, getIconHeight(), getIconHeight()};
                 Graphics2D g2 = (Graphics2D) g;
@@ -72,62 +59,63 @@ public class ToolBar {
                 g2.setColor(Color.BLACK);
                 g2.drawPolyline(xCoords, yCoords, xCoords.length);
             }
-
-            @Override
-            public int getIconWidth() {
+            @Override public int getIconWidth() {
                 return iconSize;
             }
-
-            @Override
-            public int getIconHeight() {
+            @Override public int getIconHeight() {
                 return iconSize;
             }
         });
+        JToggleButton eraseToggleButton = new JToggleButton(new Icon() {
+            @Override public void paintIcon(Component c, Graphics g, int x, int y) {
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setColor(Color.red);
+                g2.setStroke(new BasicStroke(4f));
+                g2.drawLine(offsetLeft, offsetTop, getIconHeight(), getIconWidth());
+                g2.drawLine(getIconWidth(), offsetTop, offsetLeft, getIconHeight());
+            }
+            @Override public int getIconWidth() { return iconSize; }
+            @Override public int getIconHeight() { return iconSize; }
+        });
 
-        //ActionListener werden hier eingefuegt
-        frToggleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                transitionToggleButton.setSelected(false);
-                placeToggleButton.setSelected(false);
-                if(!frToggleButton.isSelected())
-                    frame.setToggled("");
-                else
-                    frame.setToggled("fr");
-            }
-        });
-        placeToggleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                transitionToggleButton.setSelected(false);
-                frToggleButton.setSelected(false);
-                if(!placeToggleButton.isSelected())
-                    frame.setToggled("");
-                else
-                    frame.setToggled("place");
-            }
-        });
-        transitionToggleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                placeToggleButton.setSelected(false);
-                frToggleButton.setSelected(false);
-                if(!transitionToggleButton.isSelected())
-                    frame.setToggled("");
-                else
-                    frame.setToggled("transition");
-            }
-        });
+        buttons.add(placeToggleButton);
+        buttons.add(transitionToggleButton);
+        buttons.add(arcToggleButton);
+        buttons.add(eraseToggleButton);
+
+        //ActionListener
+        placeToggleButton.addActionListener(new ToggleButtonListener());
+        transitionToggleButton.addActionListener(new ToggleButtonListener());
+        arcToggleButton.addActionListener(new ToggleButtonListener());
+        eraseToggleButton.addActionListener(new ToggleButtonListener());
 
         //Tooltips
         placeToggleButton.setToolTipText("New places");
-        frToggleButton.setToolTipText("New flow relation");
+        arcToggleButton.setToolTipText("New flow relation");
         transitionToggleButton.setToolTipText("New transition");
+        eraseToggleButton.setToolTipText("Erase element");
+
+        //ActionCommand
+        placeToggleButton.setActionCommand("place");
+        transitionToggleButton.setActionCommand("transition");
+        arcToggleButton.setActionCommand("arc");
+        eraseToggleButton.setActionCommand("erase");
 
         //hinzufuegen
         toolBar.add(placeToggleButton);
         toolBar.add(transitionToggleButton);
-        toolBar.add(frToggleButton);
+        toolBar.add(arcToggleButton);
+        toolBar.add(eraseToggleButton);
+
         frame.add(toolBar, BorderLayout.EAST);
+    }
+    static class ToggleButtonListener implements ActionListener{
+        @Override public void actionPerformed(ActionEvent e){
+            JToggleButton source = (JToggleButton)e.getSource();
+            for(JToggleButton b: buttons)
+                if(source != b) b.setSelected(false);
+            if(!source.isSelected()) frame.setToggled("");
+            else frame.setToggled(e.getActionCommand());
+        }
     }
 }

@@ -39,8 +39,12 @@ public class Place extends JComponent implements GraphicPetriElement {
         g.setColor(Color.black);
         g.drawString(name, 12,23);
         g.setFont(new Font("Arial", Font.PLAIN, 12));
-        g.drawString("t: " + core.getTokens(), 12, 36);
         g.drawString("C: " + (core.getCapacity() > 99 ? "k.A." : core.getCapacity()), 12, 48);
+        if(((PlaceCore)getCore()).getTokens() > 0) {
+            g.setFont(new Font("Arial", Font.BOLD, 12));
+            g.setColor(Color.red);
+        }
+        g.drawString("t: " + core.getTokens(), 12, 36);
     }
 
     public void draw(@NotNull Graphics g){

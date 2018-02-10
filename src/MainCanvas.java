@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class MainCanvas extends JPanel{
     private ArrayList<Place> places;
     private ArrayList<Transition> transitions;
-    private ArrayList<FlowRelation> flowRelations;
+    private ArrayList<Arc> arcs;
     private MainFrame frame;
     private ControlPanel foreground;
     @Nullable
@@ -21,7 +21,7 @@ public class MainCanvas extends JPanel{
     MainCanvas(MainFrame frame){
         places = new ArrayList<>();
         transitions = new ArrayList<>();
-        flowRelations = new ArrayList<>();
+        arcs = new ArrayList<>();
         this.frame = frame;
         this.setLayout(null);
         this.setBackground(Color.white);
@@ -39,7 +39,7 @@ public class MainCanvas extends JPanel{
     @Override
     public void paintComponent(@NotNull Graphics g){
         super.paintComponent(g);
-        for(FlowRelation f: flowRelations){
+        for(Arc f: arcs){
             f.draw(g);
         }
         for(Place p: places) {
@@ -50,9 +50,7 @@ public class MainCanvas extends JPanel{
             t.draw(g);
             t.setBounds(t.getPos().x-30, t.getPos().y-30, 60,60);
         }
-        if(arr != null) {
-            arr.paintComponent(g);
-        }
+        if(arr != null) arr.paintComponent(g);
     }
     @NotNull GraphicPetriElement findElememnt(@NotNull Point point) throws Exception {
         for(Place p: places){
@@ -60,25 +58,22 @@ public class MainCanvas extends JPanel{
                 return p;
         }
         for(Transition t: transitions){
-            if(t.getBounds().contains(point))
-                return t;
+            if(t.getBounds().contains(point)) return t;
         }
         throw new Exception("No element found");
     }
-    public boolean isDuplicate(FlowRelation f){
-        for(FlowRelation foo: flowRelations)
-            if(foo.equals(f))
-                return true;
+    private boolean isDuplicate(Arc f){
+        for(Arc foo: arcs)
+            if(foo.equals(f)) return true;
         return false;
     }
-    public void addFlowRelation(@NotNull GraphicPetriElement from, @NotNull GraphicPetriElement to){
-        FlowRelation f = new FlowRelation(from, to);
-        if(isDuplicate(f))
-            throw new RuntimeException("Flow relations already exists!");
+    public void addArc(@NotNull GraphicPetriElement from, @NotNull GraphicPetriElement to){
+        Arc f = new Arc(from, to);
+        if(isDuplicate(f)) throw new RuntimeException("Arc already exists!");
         else {
-            flowRelations.add(f);
+            arcs.add(f);
             this.add(f);
-            System.out.println("Flow relation added");
+            System.out.println("Arc relation added");
         }
     }
     public void addPlace(int x, int y){
@@ -93,16 +88,27 @@ public class MainCanvas extends JPanel{
         this.add(t);
         System.out.println("Transition added@" + x + ":" + y);
     }
+    public void eraseElement(Point p){
+        System.out.println("Erasing element");
+        try{
+            GraphicPetriElement g = findElememnt(p);
+            for(Arc a: g.getCore().getFromThis())
+                arcs.remove(a);
+            for(Arc a: g.getCore().getToThis())
+                arcs.remove(a);
+            if(g.getClass() == Place.class) places.remove(g);
+            else if(g.getClass() == Transition.class) transitions.remove(g);
+        }catch (Exception err) {
+            System.out.println(err.getMessage());
+        }
+    }
 
     public String getToggled(){
         return frame.getToggled();
     }
     public void setArrow(int x, int y){
-        if(arr == null){
-            arr = new Arrow(arrowFrom, new Point(x,y));
-        }else{
-            arr.setArrow(new Point(x,y));
-        }
+        if(arr == null) arr = new Arrow(arrowFrom, new Point(x, y));
+        else arr.setArrow(new Point(x, y));
     }
     public void setArrowFrom(@Nullable Point p){
         arrowFrom = p;

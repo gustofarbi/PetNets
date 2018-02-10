@@ -54,9 +54,8 @@ public class PlaceContextMenu extends JDialog {
         try{
             nTokens = Integer.parseInt(tokensField.getText());
             nCapacity = Integer.parseInt(capacityField.getText());
-            if(nCapacity < nTokens || nTokens < 0)
-                throw new RuntimeException("Capacity must be higher than number of tokens and >0!");
-            success = nTokens > 0;
+            success = nTokens > 0 && nCapacity >= nTokens;
+            if(!success) throw new RuntimeException("Capacity must be higher than number of tokens and >0!");
         }catch(NumberFormatException e){
             messageLabel.setText("Invalid input!");
         }catch(RuntimeException e){
@@ -65,8 +64,7 @@ public class PlaceContextMenu extends JDialog {
         if(success){
             ((PlaceCore)foo.getCore()).setTokens(nTokens);
             ((PlaceCore)foo.getCore()).setCapacity(nCapacity);
-            if(!nameField.getText().isEmpty())
-                foo.setName(nameField.getText());
+            if(!nameField.getText().isEmpty()) foo.setName(nameField.getText());
             dispose();
         }
     }

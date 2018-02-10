@@ -5,11 +5,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class PlaceCore implements PetriElement{
-    private int tokens = 1, capacity = Integer.MAX_VALUE;
+    private int tokens = 0, capacity = Integer.MAX_VALUE;
     @NotNull
-    private ArrayList<FlowRelation> fromThis;
+    private ArrayList<Arc> fromThis;
     @NotNull
-    private ArrayList<FlowRelation> toThis;
+    private ArrayList<Arc> toThis;
     public PlaceCore(){
         fromThis = new ArrayList<>();
         toThis = new ArrayList<>();
@@ -32,10 +32,10 @@ public class PlaceCore implements PetriElement{
                     + Thread.currentThread().getStackTrace()[2].getFileName()
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
     }
-    @Override public void addToThis(FlowRelation p){toThis.add(p);}
-    @Override public void addFromThis(FlowRelation p){fromThis.add(p);}
+    @Override public void addToThis(Arc p){toThis.add(p);}
+    @Override public void addFromThis(Arc p){fromThis.add(p);}
     @NotNull
-    @Override public ArrayList<FlowRelation> getFromThis() { return fromThis; }
+    @Override public ArrayList<Arc> getFromThis() { return fromThis; }
     @NotNull
-    @Override public ArrayList<FlowRelation> getToThis(){return toThis;}
+    @Override public ArrayList<Arc> getToThis(){return toThis;}
 }

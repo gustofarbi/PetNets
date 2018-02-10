@@ -2,9 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MessageBar {
-
-    static void makeMessageBar(MainFrame frame){
-        JLabel message, stats;
+    JLabel message, stats;
+    MessageBar(MainFrame frame){
+        makeMessageBar(frame);
+    }
+    void makeMessageBar(MainFrame frame){
         JPanel panel;
 
         panel = new JPanel();
@@ -21,5 +23,11 @@ public class MessageBar {
         panel.add(message, BorderLayout.WEST);
         panel.add(stats, BorderLayout.EAST);
         frame.c.add(panel, BorderLayout.SOUTH);
+    }
+    void setMessage(String s){
+        message.setText(s);
+    }
+    void setStats(String s){
+        stats.setText(s);
     }
 }
