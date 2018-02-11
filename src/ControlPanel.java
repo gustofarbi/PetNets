@@ -1,6 +1,6 @@
-import PetriElements.Arc;
 import PetriElements.GraphicPetriElement;
 import PetriElements.Place;
+import PetriElements.PlaceCore;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,12 +31,22 @@ class ControlPanel extends JPanel{
             try{
                 foo = canvas.findElememnt(e.getPoint());
             }catch(Exception err){
-                System.out.println(err.getMessage());
+                System.err.println(err.getMessage());
             }
-            //Shows PlaceContextMenu
-            if(foo != null && foo.getClass() == Place.class && e.getClickCount() == 2){
-                new PlaceContextMenu((Place)foo);
-                canvas.repaint();
+            //Shows PlaceContextMenu or adds/removes tokens from place
+            if(foo != null && foo.getClass() == Place.class){
+                if(canvas.getToggled().equals("token")){
+                    PlaceCore pc = (PlaceCore)foo.getCore();
+                    if(e.getButton() == MouseEvent.BUTTON3)
+                        pc.setTokens(pc.getTokens()-1 >= 0 ? pc.getTokens()-1 : 0);
+                    else if(e.getButton() == MouseEvent.BUTTON1)
+                        pc.setTokens(pc.getTokens()+1);
+                    System.out.println("tokens added/removed");
+                }
+                else if(e.getClickCount() == 2) {
+                    new PlaceContextMenu((Place) foo);
+                    canvas.repaint();
+                }
             }
             //Erasing an object
             if(canvas.getToggled().equals("erase") && foo != null){
@@ -44,7 +54,7 @@ class ControlPanel extends JPanel{
                 canvas.repaint();
             }
             //Adding an object
-            if(!canvas.getToggled().isEmpty() && foo == null){
+            if(foo == null){
                 switch(canvas.getToggled()){
                     case "place":
                         addPlace(e.getX(), e.getY());
@@ -64,7 +74,7 @@ class ControlPanel extends JPanel{
                 try{
                     arcFrom = canvas.findElememnt(e.getPoint());
                 }catch (Exception err){
-                    System.out.println(err.getMessage());
+                    System.err.println(err.getMessage());
                 }
                 if(arcFrom != null) canvas.setArrowFrom(e.getPoint());
             }
@@ -76,7 +86,7 @@ class ControlPanel extends JPanel{
                     GraphicPetriElement arcTo = canvas.findElememnt(e.getPoint());
                     if(arcTo.getClass() != arcFrom.getClass()) addArc(arcFrom, arcTo);
                 }catch(Exception err){
-                    System.out.println(err.getMessage());
+                    System.err.println(err.getMessage());
                 }
             }
             canvas.eraseArrow();
@@ -88,14 +98,14 @@ class ControlPanel extends JPanel{
         @Override
         public void mouseDragged(@NotNull MouseEvent e){
             if(canvas.getToggled().equals("arc")){
-                canvas.setArrow(e.getX(),e.getY());
+                canvas.setArrow(e.getPoint());
                 canvas.repaint();
             }else {
                 if(draggedElement == null) {
                     try {
                         draggedElement = canvas.findElememnt(e.getPoint());
                     } catch (Exception err) {
-                        System.out.println(err.getMessage());
+                        System.err.println(err.getMessage());
                     }
                 }
                 if(draggedElement != null) {
@@ -107,15 +117,13 @@ class ControlPanel extends JPanel{
     }
 
     private void addArc(@NotNull GraphicPetriElement from, @NotNull GraphicPetriElement to){
-        canvas.addArc(from, to);
+        try {
+            canvas.addArc(from, to);
+        }catch (RuntimeException err){
+            System.err.println(err.getMessage());
+        }
     }
-    private void addPlace(int x, int y){
-        canvas.addPlace(x,y);
-    }
-    private void addTransition(int x, int y){
-        canvas.addTransition(x,y);
-    }
-    private void eraseElement(Point p){
-        canvas.eraseElement(p);
-    }
+    private void addPlace(int x, int y){canvas.addPlace(x,y); }
+    private void addTransition(int x, int y){ canvas.addTransition(x,y); }
+    private void eraseElement(Point p){ canvas.eraseElement(p); }
 }

@@ -18,7 +18,7 @@ public class PlaceCore implements PetriElement{
     public int getTokens(){return tokens;}
     public int getCapacity(){return capacity;}
     public void setTokens(int t) {
-        if (t > 0)
+        if (t >= 0)
             tokens = t;
         else
             throw new RuntimeException("Invalid tokens input!@" + Thread.currentThread().getStackTrace()[2].getFileName()

@@ -1,3 +1,4 @@
+import PetriElements.Arc;
 import PetriElements.Place;
 import PetriElements.PlaceCore;
 
@@ -36,13 +37,13 @@ public class PlaceContextMenu extends JDialog {
 
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(e -> onCancel()
-                , KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+                , KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0)
+                , JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
         foo = p;
         nameField.setText(p.getName());
         tokensField.setText(((PlaceCore)p.getCore()).getTokens() + "");
         capacityField.setText(((PlaceCore)p.getCore()).getCapacity() + "");
-
         pack();
         setVisible(true);
         setLocation(500,500);
@@ -70,5 +71,10 @@ public class PlaceContextMenu extends JDialog {
     }
     private void onCancel() {
         dispose();
+    }
+
+    public static void main(String[] args) {
+
+        new PlaceContextMenu(new Place(1,1));
     }
 }

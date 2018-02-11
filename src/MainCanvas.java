@@ -25,6 +25,7 @@ public class MainCanvas extends JPanel{
         this.frame = frame;
         this.setLayout(null);
         this.setBackground(Color.white);
+        this.updateStats();
         foreground = new ControlPanel(this);
         this.add(foreground);
         this.addComponentListener(new ComponentAdapter() {
@@ -33,6 +34,7 @@ public class MainCanvas extends JPanel{
                 foreground.setSize(getWidth(), getHeight());
             }
         });
+
         frame.c.add(this);
     }
 
@@ -52,7 +54,7 @@ public class MainCanvas extends JPanel{
         }
         if(arr != null) arr.paintComponent(g);
     }
-    @NotNull GraphicPetriElement findElememnt(@NotNull Point point) throws Exception {
+    @NotNull GraphicPetriElement findElememnt(@NotNull Point point) throws RuntimeException {
         for(Place p: places){
             if(p.getBounds().contains(point))
                 return p;
@@ -60,20 +62,24 @@ public class MainCanvas extends JPanel{
         for(Transition t: transitions){
             if(t.getBounds().contains(point)) return t;
         }
-        throw new Exception("No element found");
+        throw new RuntimeException("No element found");
     }
     private boolean isDuplicate(Arc f){
         for(Arc foo: arcs)
             if(foo.equals(f)) return true;
         return false;
     }
-    public void addArc(@NotNull GraphicPetriElement from, @NotNull GraphicPetriElement to){
+    public void addArc(@NotNull GraphicPetriElement from, @NotNull GraphicPetriElement to) throws RuntimeException{
         Arc f = new Arc(from, to);
-        if(isDuplicate(f)) throw new RuntimeException("Arc already exists!");
+        if(isDuplicate(f)){
+            frame.setMessage("Arc already exists!");
+            throw new RuntimeException("Arc already exists!");
+        }
         else {
             arcs.add(f);
             this.add(f);
             System.out.println("Arc relation added");
+            updateStats();
         }
     }
     public void addPlace(int x, int y){
@@ -81,12 +87,19 @@ public class MainCanvas extends JPanel{
         places.add(p);
         this.add(p);
         System.out.println("Place added@ " + x + ":" + y);
+        updateStats();
     }
     public void addTransition(int x, int y){
         Transition t = new Transition(x,y);
         transitions.add(t);
         this.add(t);
         System.out.println("Transition added@" + x + ":" + y);
+        updateStats();
+    }
+    private void updateStats(){
+        frame.setStats("Places: " + places.size() +
+        "   Transition: " + transitions.size() +
+        "   Arcs: " + arcs.size() + "   ");
     }
     public void eraseElement(Point p){
         System.out.println("Erasing element");
@@ -98,17 +111,18 @@ public class MainCanvas extends JPanel{
                 arcs.remove(a);
             if(g.getClass() == Place.class) places.remove(g);
             else if(g.getClass() == Transition.class) transitions.remove(g);
+            updateStats();
         }catch (Exception err) {
-            System.out.println(err.getMessage());
+            System.err.println(err.getMessage());
         }
     }
 
     public String getToggled(){
         return frame.getToggled();
     }
-    public void setArrow(int x, int y){
-        if(arr == null) arr = new Arrow(arrowFrom, new Point(x, y));
-        else arr.setArrow(new Point(x, y));
+    public void setArrow(Point p){
+        if(arr == null) arr = new Arrow(arrowFrom, p);
+        else arr.setArrow(p);
     }
     public void setArrowFrom(@Nullable Point p){
         arrowFrom = p;

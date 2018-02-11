@@ -10,8 +10,9 @@ public class MainFrame extends JFrame {
     private String toggled = "";
     @NotNull private JFrame frame = this;
     private MainCanvas canvas;
+    private MessageBar messageBar;
 
-    public MainFrame(){
+    MainFrame(){
         setSize(1200,800);
         setSize(getPreferredSize());
         setBackground(Color.white);
@@ -20,7 +21,7 @@ public class MainFrame extends JFrame {
 
         MenuBar.makeMenuBar(this);
         ToolBar.makeToolBar(this);
-        MessageBar messageBar = new MessageBar(this);
+        messageBar = new MessageBar(this);
         canvas = new MainCanvas(this);
 
         try{
@@ -47,6 +48,12 @@ public class MainFrame extends JFrame {
     @Override
     public Dimension getPreferredSize(){
         return new Dimension(1200,800);
+    }
+    public void setMessage(String s){
+        messageBar.setMessage(s);
+    }
+    public void setStats(String s){
+        messageBar.setStats(s);
     }
 
     public static void main(String[] args) {

@@ -1,12 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class MessageBar {
-    JLabel message, stats;
+class MessageBar {
+    private JLabel message, stats;
     MessageBar(MainFrame frame){
-        makeMessageBar(frame);
-    }
-    void makeMessageBar(MainFrame frame){
         JPanel panel;
 
         panel = new JPanel();
