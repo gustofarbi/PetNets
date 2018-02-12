@@ -1,6 +1,8 @@
 import PetriElements.Place;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.text.StyledEditorKit;
 import java.awt.*;
 import java.util.ArrayList;
@@ -22,15 +24,18 @@ public class ddd extends JDialog {
 
     ddd(Place p){
         foo = p;
-        //c = getContentPane();
+        c = getContentPane();
         this.setLayout(new GridBagLayout());
         GridBagConstraints co = new GridBagConstraints();
+        Border margin = new EmptyBorder(3,3,3,3);
 
-        JLabel[] labels = new JLabel[]{new JLabel("Name:"), new JLabel("Tokens:"), new JLabel("Capacity:")};
+        JLabel[] labels = new JLabel[]{new JLabel("Name:"), new JLabel("Tokens:"), new JLabel("Capacity:   ")};
         co.fill = GridBagConstraints.HORIZONTAL;
         co.gridx = 0;
         for(int i = 0; i< 3; i++){
             co.gridy = i;
+
+            labels[i].setBorder(margin);
             this.add(labels[i],co);
         }
         JTextField[] textFields = new JTextField[]{new JTextField(),new JTextField(),new JTextField()};
@@ -40,6 +45,9 @@ public class ddd extends JDialog {
         JTextField field;
         for(int i = 0; i<3;i++){
             field = new JTextField();
+            field.setMargin(new Insets(5,5,5,5));
+            field.setBorder(margin);
+            field.setMaximumSize(new Dimension(10,20));
             co.gridy = i;
             this.add(field, co);
         }

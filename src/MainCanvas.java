@@ -5,6 +5,8 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 public class MainCanvas extends JPanel{
@@ -134,21 +136,36 @@ public class MainCanvas extends JPanel{
     }
     class Arrow extends JComponent{
         Point from, to;
+        AffineTransform tx;
+        Line2D.Double line;
+        Polygon arrowHead;
 
         Arrow(Point start, Point end){
             from = start;
             to = end;
+            tx = new AffineTransform();
+            line = new Line2D.Double(from.x,from.y,to.x,to.y);
+            arrowHead = new Polygon();
+            arrowHead.addPoint(0,5);
+            arrowHead.addPoint(-5,-5);
+            arrowHead.addPoint(5,-5);
         }
         void setArrow(Point end){
             to = end;
+            line.setLine(from.x, from.y, to.x, to.y);
         }
         @Override
-        public void paintComponent(@NotNull Graphics g){
-            super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setColor(Color.black);
+        public void paintComponent(Graphics g){
+            tx.setToIdentity();
+            double angle = Math.atan2(line.y2-line.y1, line.x2-line.x1);
+            tx.translate(line.x2, line.y2);
+            tx.rotate(angle-Math.PI/2d);
+            Graphics2D g2 = (Graphics2D) g.create();
             g2.setStroke(new BasicStroke(2.0f));
-            g2.drawLine(from.x,from.y,to.x,to.y);
+            g2.draw(new Line2D.Double(from.x, from.y, to.x, to.y));
+            g2.setTransform(tx);
+            g2.fill(arrowHead);
+            g2.dispose();
         }
     }
     @Override
