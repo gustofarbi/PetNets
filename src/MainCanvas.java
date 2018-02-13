@@ -80,7 +80,7 @@ public class MainCanvas extends JPanel{
         else {
             arcs.add(f);
             this.add(f);
-            System.out.println("Arc relation added");
+            System.out.println("Arc added");
             updateStats();
         }
     }
@@ -123,7 +123,7 @@ public class MainCanvas extends JPanel{
         return frame.getToggled();
     }
     public void setArrow(Point p){
-        if(arr == null) arr = new Arrow(arrowFrom, p);
+        if(arr == null && arrowFrom != null) arr = new Arrow(arrowFrom, p);
         else arr.setArrow(p);
     }
     public void setArrowFrom(@Nullable Point p){
@@ -171,5 +171,17 @@ public class MainCanvas extends JPanel{
     @Override
     public Dimension getSize(){
         return frame.getSize();
+    }
+    public void animateStep(){
+        for(Arc a: arcs){
+            Timer timer = new Timer(200, new Animator(a.getFromPos(), a.getToPos(), 500, this.getGraphics()));
+            timer.start();
+        }
+    }
+    public void play(){
+
+    }
+    public void stop(){
+
     }
 }

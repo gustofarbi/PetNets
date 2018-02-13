@@ -55,8 +55,8 @@ public class Arc extends JComponent {
         at.rotate(angle-Math.PI/2d);
 
     }
-    private Point getFromPos(){return fromPos;}
-    private Point getToPos(){return toPos;}
+    public Point getFromPos(){return fromPos;}
+    public Point getToPos(){return toPos;}
     private Point getTextPos(){ return new Point((fromPos.x+toPos.x)/2, (fromPos.y+toPos.y)/2); }
     private void relPos(){
         relPos = new Point();

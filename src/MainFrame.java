@@ -40,6 +40,9 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
+    public void animateStep(){ canvas.animateStep(); }
+    public void play(){canvas.play();}
+    public void stop(){canvas.stop();}
     public void setToggled(String label){
         this.toggled = label;
     }

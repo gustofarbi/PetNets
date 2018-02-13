@@ -20,7 +20,7 @@ public class ToolBar {
 
         JToolBar toolBar = new JToolBar("Tools", JToolBar.VERTICAL);
 
-        //Initialisierungen von ToggleButtons
+        //Initialisierungen von JToggleButtons und JButtons
         JToggleButton placeToggleButton = new JToggleButton(new Icon() {
             @Override public void paintIcon(Component c, @NotNull Graphics g, int x, int y) {
                 g.setColor(Color.BLACK);
@@ -78,11 +78,44 @@ public class ToolBar {
             @Override public int getIconHeight() { return iconSize; }
         });
         JToggleButton tokensButton = new JToggleButton(new Icon() {
-            @Override
-            public void paintIcon(Component c, Graphics g, int x, int y) {
+            @Override public void paintIcon(Component c, Graphics g, int x, int y) {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setColor(Color.black);
-                g2.fillOval(10,10, 10,10);
+                g2.fillOval(18,18, 10,10);
+            }
+            @Override public int getIconWidth() { return iconSize; }
+            @Override public int getIconHeight() { return iconSize; }
+        });
+        JButton stepButton = new JButton(new Icon() {
+            @Override public void paintIcon(Component c, Graphics g, int x, int y) {
+                Graphics2D g2 = (Graphics2D)g;
+                g2.setColor(Color.orange);
+                int[] xPoints = {offsetLeft, offsetLeft, iconSize-offsetLeft, offsetLeft};
+                int[] yPoints = {offsetTop, iconSize, iconSize/2+offsetTop, offsetTop};
+                g2.fill(new Polygon(xPoints, yPoints, xPoints.length));
+                g2.setColor(Color.black);
+                g2.setFont(new Font("Arial", Font.PLAIN, 20));
+                g2.drawString("1", 15,30);
+            }
+            @Override public int getIconWidth() { return iconSize; }
+            @Override public int getIconHeight() { return iconSize; }
+        });
+        JButton playButton = new JButton(new Icon() {
+            @Override public void paintIcon(Component c, Graphics g, int x, int y) {
+                Graphics2D g2 = (Graphics2D)g;
+                g2.setColor(Color.orange);
+                int[] xPoints = {offsetLeft, offsetLeft, iconSize-offsetLeft, offsetLeft};
+                int[] yPoints = {offsetTop, iconSize, iconSize/2+offsetTop, offsetTop};
+                g2.fill(new Polygon(xPoints, yPoints, xPoints.length));
+            }
+            @Override public int getIconWidth() { return iconSize; }
+            @Override public int getIconHeight() { return iconSize; }
+        });
+        JButton stopButton = new JButton(new Icon() {
+            @Override public void paintIcon(Component c, Graphics g, int x, int y) {
+                Graphics2D g2 = (Graphics2D)g;
+                g2.setColor(Color.red);
+                g2.fillRect(offsetLeft, offsetTop, iconSize,iconSize);
             }
             @Override public int getIconWidth() { return iconSize; }
             @Override public int getIconHeight() { return iconSize; }
@@ -100,6 +133,10 @@ public class ToolBar {
         arcToggleButton.addActionListener(new ToggleButtonListener());
         eraseToggleButton.addActionListener(new ToggleButtonListener());
         tokensButton.addActionListener(new ToggleButtonListener());
+        stepButton.addActionListener(new ButtonListener());
+        playButton.addActionListener(new ButtonListener());
+        stopButton.addActionListener(new ButtonListener());
+
 
         //Tooltips
         placeToggleButton.setToolTipText("New places");
@@ -107,6 +144,9 @@ public class ToolBar {
         transitionToggleButton.setToolTipText("New transition");
         eraseToggleButton.setToolTipText("Erase element");
         tokensButton.setToolTipText("Add/remove tokens");
+        stepButton.setToolTipText("Animate one step");
+        playButton.setToolTipText("Animate simulation");
+        stopButton.setToolTipText("Stop simulation");
 
         //ActionCommand
         placeToggleButton.setActionCommand("place");
@@ -114,6 +154,9 @@ public class ToolBar {
         arcToggleButton.setActionCommand("arc");
         eraseToggleButton.setActionCommand("erase");
         tokensButton.setActionCommand("token");
+        stepButton.setActionCommand("step");
+        playButton.setActionCommand("play");
+        stopButton.setActionCommand("stop");
 
         //hinzufuegen
         toolBar.add(placeToggleButton);
@@ -121,6 +164,10 @@ public class ToolBar {
         toolBar.add(arcToggleButton);
         toolBar.add(eraseToggleButton);
         toolBar.add(tokensButton);
+        toolBar.add(new JSeparator(SwingConstants.HORIZONTAL));
+        toolBar.add(stepButton, BorderLayout.SOUTH);
+        toolBar.add(playButton, BorderLayout.SOUTH);
+        toolBar.add(stopButton, BorderLayout.SOUTH);
 
         frame.add(toolBar, BorderLayout.EAST);
     }
@@ -151,6 +198,26 @@ public class ToolBar {
                     throw new RuntimeException("Illegal action command! @"
                             + Thread.currentThread().getStackTrace()[2].getFileName() + ":"
                             + Thread.currentThread().getStackTrace()[2].getLineNumber());
+            }
+        }
+    }
+    static class ButtonListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) throws RuntimeException{
+            switch(e.getActionCommand()){
+                case "step":
+                    frame.animateStep();
+                    break;
+                case "play":
+                    frame.play();
+                    break;
+                case "stop":
+                    frame.stop();
+                    break;
+                default:
+                    throw new RuntimeException("Invalid action command! @"
+                    + Thread.currentThread().getStackTrace()[2].getFileName() + ":"
+                    + Thread.currentThread().getStackTrace()[2].getLineNumber());
             }
         }
     }
