@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
@@ -14,6 +15,7 @@ public class MainCanvas extends JPanel{
     private ArrayList<Transition> transitions;
     private ArrayList<Arc> arcs;
     private MainFrame frame;
+    private MainCanvas canvas = this;
     private ControlPanel foreground;
     @Nullable
     private Arrow arr;
@@ -40,22 +42,7 @@ public class MainCanvas extends JPanel{
         frame.c.add(this);
     }
 
-    @Override
-    public void paintComponent(@NotNull Graphics g){
-        super.paintComponent(g);
-        for(Arc f: arcs){
-            f.draw(g);
-        }
-        for(Place p: places) {
-            p.draw(g);
-            p.setBounds(p.getPos().x-30, p.getPos().y-30, 60,60);
-        }
-        for(Transition t: transitions){
-            t.draw(g);
-            t.setBounds(t.getPos().x-30, t.getPos().y-30, 60,60);
-        }
-        if(arr != null) arr.paintComponent(g);
-    }
+
     @NotNull GraphicPetriElement findElememnt(@NotNull Point point) throws RuntimeException {
         for(Place p: places){
             if(p.getBounds().contains(point))
@@ -168,14 +155,88 @@ public class MainCanvas extends JPanel{
             g2.dispose();
         }
     }
+    class Animator extends JComponent implements ActionListener {
+        private Point from, to, pos;
+        private static final int radius = 15;
+        private static final int diameter = radius*2;
+        private Ellipse2D.Double token;
+        private Graphics g;
+        private final int animationSpeed;
+        private int counter = 0;
+        private double progress = 0.0;
+        private int dx, dy;
+        private boolean isDone;
+        private double stepX, stepY;
+        private Timer timer;
+
+        Animator(Point start, Point end,final int speed, Graphics _g) {
+            from = start;
+            to = end;
+            pos = from;
+            g = _g;
+            animationSpeed = speed;
+            dx = to.x - from.x;
+            dy = to.y - from.y;
+            stepX = ((double)to.x - (double)from.x)/(double)animationSpeed;
+            stepY = ((double)to.y - (double)from.y)/(double)animationSpeed;
+
+            token = new Ellipse2D.Double(pos.x - radius, pos.y - radius, diameter, diameter);
+            timer = new Timer(animationSpeed, this);
+            timer.start();
+        }
+        @Override
+        public void actionPerformed(ActionEvent e){
+            draw();
+            canvas.repaint();
+        }
+        public boolean isDone(){return isDone;}
+
+        void draw(){
+            if(pos.x >= to.x || pos.y >= to.y || counter >= animationSpeed) timer.stop();
+            super.paintComponent(g);
+
+            counter++;
+            progress = (double)counter/animationSpeed;
+
+            pos.x = from.x + (int)(dx*progress);
+            pos.y = from.y + (int)(dy*progress);
+
+            Graphics2D g2 = (Graphics2D) g.create();
+            /*
+            RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g2.setRenderingHints(rh);
+            */
+
+            token.setFrame(pos.x - radius, pos.y - radius, diameter, diameter);
+            g2.fill(token);
+            g2.dispose();
+        }
+    }
+    @Override
+    public void paintComponent(@NotNull Graphics g){
+        super.paintComponent(g);
+        for(Arc f: arcs){
+            f.draw(g);
+        }
+        for(Place p: places) {
+            p.draw(g);
+            p.setBounds(p.getPos().x-30, p.getPos().y-30, 60,60);
+        }
+        for(Transition t: transitions){
+            t.draw(g);
+            t.setBounds(t.getPos().x-30, t.getPos().y-30, 60,60);
+        }
+        if(arr != null) arr.paintComponent(g);
+    }
+
     @Override
     public Dimension getSize(){
         return frame.getSize();
     }
     public void animateStep(){
-        for(Arc a: arcs){
-            Timer timer = new Timer(200, new Animator(a.getFromPos(), a.getToPos(), 500, this.getGraphics()));
-            timer.start();
+        for(Arc a: arcs) {
+            Animator an = new Animator(a.getFromPos(), a.getToPos(), 50, canvas.getGraphics());
         }
     }
     public void play(){
