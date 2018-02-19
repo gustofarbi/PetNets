@@ -35,6 +35,11 @@ public class Place extends JComponent implements GraphicPetriElement {
             e.printStackTrace();
         }
         Graphics2D g = bi.createGraphics();
+
+        RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g.setRenderingHints(rh);
+
         g.setFont(new Font("Arial", Font.PLAIN, 18));
         g.setColor(Color.black);
         g.drawString(name, 12,23);

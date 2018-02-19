@@ -106,9 +106,11 @@ public class Arc extends JComponent {
     public void draw(Graphics g){
         refreshPosition();
         Graphics2D g2 = (Graphics2D) g.create();
+
         RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g2.setRenderingHints(rh);
+
         g2.setColor(Color.black);
         g2.setStroke(new BasicStroke(2.0f));
         Point textPos = getTextPos();

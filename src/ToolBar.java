@@ -23,10 +23,14 @@ public class ToolBar {
         //Initialisierungen von JToggleButtons und JButtons
         JToggleButton placeToggleButton = new JToggleButton(new Icon() {
             @Override public void paintIcon(Component c, @NotNull Graphics g, int x, int y) {
-                g.setColor(Color.BLACK);
-                g.fillOval(offsetLeft, offsetTop,getIconWidth(),getIconHeight());
-                g.setColor(Color.WHITE);
-                g.fillOval(offsetLeft + thickness,offsetTop + thickness,getIconWidth() - (2*thickness), getIconHeight() - (2*thickness));
+                Graphics2D g2 = (Graphics2D)g;
+                RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                g2.setRenderingHints(rh);
+                g2.setColor(Color.BLACK);
+                g2.fillOval(offsetLeft, offsetTop,getIconWidth(),getIconHeight());
+                g2.setColor(Color.WHITE);
+                g2.fillOval(offsetLeft + thickness,offsetTop + thickness,getIconWidth() - (2*thickness), getIconHeight() - (2*thickness));
             }
             @Override public int getIconWidth() {
                 return iconSize;
@@ -38,10 +42,14 @@ public class ToolBar {
         JToggleButton transitionToggleButton = new JToggleButton(new Icon(){
             @Override public void paintIcon(Component c, @NotNull Graphics g, int x, int y) {
                 int narrowing = 5;
-                g.setColor(Color.BLACK);
-                g.fillRect(offsetLeft + narrowing, offsetTop, getIconWidth()-(2*narrowing)+2, getIconHeight());
-                g.setColor(Color.WHITE);
-                g.fillRect(offsetLeft + thickness + narrowing, offsetTop + thickness, getIconWidth()-(3*narrowing)- 3, getIconHeight()-thickness- narrowing);
+                Graphics2D g2 = (Graphics2D) g;
+                RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                g2.setRenderingHints(rh);
+                g2.setColor(Color.BLACK);
+                g2.fillRect(offsetLeft + narrowing, offsetTop, getIconWidth()-(2*narrowing)+2, getIconHeight());
+                g2.setColor(Color.WHITE);
+                g2.fillRect(offsetLeft + thickness + narrowing, offsetTop + thickness, getIconWidth()-(3*narrowing)- 3, getIconHeight()-thickness- narrowing);
             }
             @Override public int getIconWidth() {
                 return iconSize;
@@ -55,6 +63,9 @@ public class ToolBar {
                 int xCoords[] = {offsetLeft,getIconWidth(), getIconWidth(), getIconWidth(), getIconWidth()-10};
                 int yCoords[] = {offsetTop,getIconHeight(), getIconHeight()-10, getIconHeight(), getIconHeight()};
                 Graphics2D g2 = (Graphics2D) g;
+                RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                g2.setRenderingHints(rh);
                 g2.setStroke(new BasicStroke(1.5f));
                 g2.setColor(Color.BLACK);
                 g2.drawPolyline(xCoords, yCoords, xCoords.length);
@@ -69,6 +80,9 @@ public class ToolBar {
         JToggleButton eraseToggleButton = new JToggleButton(new Icon() {
             @Override public void paintIcon(Component c, Graphics g, int x, int y) {
                 Graphics2D g2 = (Graphics2D) g;
+                RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                g2.setRenderingHints(rh);
                 g2.setColor(Color.red);
                 g2.setStroke(new BasicStroke(4f));
                 g2.drawLine(offsetLeft, offsetTop, getIconHeight(), getIconWidth());
@@ -80,6 +94,9 @@ public class ToolBar {
         JToggleButton tokensButton = new JToggleButton(new Icon() {
             @Override public void paintIcon(Component c, Graphics g, int x, int y) {
                 Graphics2D g2 = (Graphics2D) g;
+                RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                g2.setRenderingHints(rh);
                 g2.setColor(Color.black);
                 g2.fillOval(18,18, 10,10);
             }
@@ -89,6 +106,9 @@ public class ToolBar {
         JButton stepButton = new JButton(new Icon() {
             @Override public void paintIcon(Component c, Graphics g, int x, int y) {
                 Graphics2D g2 = (Graphics2D)g;
+                RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                g2.setRenderingHints(rh);
                 g2.setColor(Color.orange);
                 int[] xPoints = {offsetLeft, offsetLeft, iconSize-offsetLeft, offsetLeft};
                 int[] yPoints = {offsetTop, iconSize, iconSize/2+offsetTop, offsetTop};
@@ -103,6 +123,9 @@ public class ToolBar {
         JButton playButton = new JButton(new Icon() {
             @Override public void paintIcon(Component c, Graphics g, int x, int y) {
                 Graphics2D g2 = (Graphics2D)g;
+                RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                g2.setRenderingHints(rh);
                 g2.setColor(Color.orange);
                 int[] xPoints = {offsetLeft, offsetLeft, iconSize-offsetLeft, offsetLeft};
                 int[] yPoints = {offsetTop, iconSize, iconSize/2+offsetTop, offsetTop};
@@ -114,6 +137,9 @@ public class ToolBar {
         JButton stopButton = new JButton(new Icon() {
             @Override public void paintIcon(Component c, Graphics g, int x, int y) {
                 Graphics2D g2 = (Graphics2D)g;
+                RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                g2.setRenderingHints(rh);
                 g2.setColor(Color.red);
                 g2.fillRect(offsetLeft, offsetTop, iconSize,iconSize);
             }
