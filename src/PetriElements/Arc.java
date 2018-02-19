@@ -3,6 +3,7 @@ package PetriElements;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 
 public class Arc extends JComponent {
@@ -15,6 +16,13 @@ public class Arc extends JComponent {
     private AffineTransform at;
     private Line2D.Double line;
     private static Polygon arrowHead;
+    private Ellipse2D.Double token;
+    private static final int radius = 15;
+    private static final int diameter = 2*radius;
+    private double stepX, stepY;
+    private static final int speed = 30;
+    private boolean isDone = false;
+    private double tokenPosX, tokenPosY;
 
     public Arc(GraphicPetriElement start, GraphicPetriElement end){
         if(start.getClass() == end.getClass()) {
@@ -58,6 +66,32 @@ public class Arc extends JComponent {
     public Point getFromPos(){return fromPos;}
     public Point getToPos(){return toPos;}
     private Point getTextPos(){ return new Point((fromPos.x+toPos.x)/2, (fromPos.y+toPos.y)/2); }
+
+    public boolean isDone(){return isDone;}
+    public void setToken(){
+        token = new Ellipse2D.Double(fromPos.x-radius, fromPos.y-radius, diameter, diameter);
+        stepX = (double)(relPos.x-fromPos.x)/(double)speed;
+        stepY = (double)(relPos.y-fromPos.y)/(double)speed;
+        tokenPosX = fromPos.x;
+        tokenPosY = fromPos.y;
+    }
+    public void makeStep(){
+        if(relPos.distance(tokenPosX, tokenPosY) < 50)
+            isDone = true;
+        else {
+            tokenPosX += stepX;
+            tokenPosY += stepY;
+            token.setFrame(tokenPosX - radius, tokenPosY - radius, diameter, diameter);
+        }
+    }
+    public void disposeToken(){
+        token.setFrame(0,0,0,0);
+        token = null;
+        isDone = false;
+    }
+    public boolean isTokenSet(){
+        return token != null;
+    }
     private void relPos(){
         relPos = new Point();
         if(fromPos.x > toPos.x)
@@ -72,11 +106,17 @@ public class Arc extends JComponent {
     public void draw(Graphics g){
         refreshPosition();
         Graphics2D g2 = (Graphics2D) g.create();
+        RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2.setRenderingHints(rh);
         g2.setColor(Color.black);
         g2.setStroke(new BasicStroke(2.0f));
         Point textPos = getTextPos();
         g2.setFont(new Font("Arial", Font.PLAIN, 14));
         g2.drawString("ID: " + ID, textPos.x+offset,textPos.y+offset);
+        if(token != null){
+            g2.fill(token);
+        }
         g2.draw(line);
         g2.setTransform(at);
         g2.fill(arrowHead);

@@ -235,9 +235,28 @@ public class MainCanvas extends JPanel{
         return frame.getSize();
     }
     public void animateStep(){
-        for(Arc a: arcs) {
-            Animator an = new Animator(a.getFromPos(), a.getToPos(), 50, canvas.getGraphics());
-        }
+        for(Arc a: arcs)
+            a.setToken();
+        Timer timer = new Timer(30, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int count = 0;
+                for(Arc a: arcs){
+                    if(a.isDone()){
+                        a.disposeToken();
+                    }
+                    else if(a.isTokenSet()){
+                        count++;
+                        a.makeStep();
+                    }
+                    canvas.repaint();
+                }
+                if(count == 0)
+                    ((Timer)e.getSource()).stop();
+
+            }
+        });
+        timer.start();
     }
     public void play(){
 
