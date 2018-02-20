@@ -65,6 +65,14 @@ public class Arc extends JComponent {
     }
     public Point getFromPos(){return fromPos;}
     public Point getToPos(){return toPos;}
+    public GraphicPetriElement getFrom(){
+        return from;
+    }
+
+    public GraphicPetriElement getTo() {
+        return to;
+    }
+
     private Point getTextPos(){ return new Point((fromPos.x+toPos.x)/2, (fromPos.y+toPos.y)/2); }
 
     public boolean isDone(){return isDone;}

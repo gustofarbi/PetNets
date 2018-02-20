@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Transition extends JComponent implements GraphicPetriElement {
     private static final int size = 60;
@@ -52,6 +53,12 @@ public class Transition extends JComponent implements GraphicPetriElement {
     public void draw(@NotNull Graphics g){
         setImage();
         g.drawImage(bi, xPos-(size/2), yPos-(size/2), null);
+    }
+    public boolean checkArcsToThis(){
+        return this.getCore().checkArcsToThis();
+    }
+    public boolean checkArcsFromThis(){
+        return this.getCore().checkArcsFromThis();
     }
     @Override public void paintComponent(@NotNull Graphics g){draw(g);}
 }

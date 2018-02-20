@@ -155,64 +155,7 @@ public class MainCanvas extends JPanel{
             g2.dispose();
         }
     }
-    class Animator extends JComponent implements ActionListener {
-        private Point from, to, pos;
-        private static final int radius = 15;
-        private static final int diameter = radius*2;
-        private Ellipse2D.Double token;
-        private Graphics g;
-        private final int animationSpeed;
-        private int counter = 0;
-        private double progress = 0.0;
-        private int dx, dy;
-        private boolean isDone;
-        private double stepX, stepY;
-        private Timer timer;
 
-        Animator(Point start, Point end,final int speed, Graphics _g) {
-            from = start;
-            to = end;
-            pos = from;
-            g = _g;
-            animationSpeed = speed;
-            dx = to.x - from.x;
-            dy = to.y - from.y;
-            stepX = ((double)to.x - (double)from.x)/(double)animationSpeed;
-            stepY = ((double)to.y - (double)from.y)/(double)animationSpeed;
-
-            token = new Ellipse2D.Double(pos.x - radius, pos.y - radius, diameter, diameter);
-            timer = new Timer(animationSpeed, this);
-            timer.start();
-        }
-        @Override
-        public void actionPerformed(ActionEvent e){
-            draw();
-            canvas.repaint();
-        }
-        public boolean isDone(){return isDone;}
-
-        void draw(){
-            if(pos.x >= to.x || pos.y >= to.y || counter >= animationSpeed) timer.stop();
-            super.paintComponent(g);
-
-            counter++;
-            progress = (double)counter/animationSpeed;
-
-            pos.x = from.x + (int)(dx*progress);
-            pos.y = from.y + (int)(dy*progress);
-
-            Graphics2D g2 = (Graphics2D) g.create();
-            /*
-            RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            g2.setRenderingHints(rh);
-            */
-
-            token.setFrame(pos.x - radius, pos.y - radius, diameter, diameter);
-            g2.fill(token);
-            g2.dispose();
-        }
-    }
     @Override
     public void paintComponent(@NotNull Graphics g){
         super.paintComponent(g);
@@ -232,30 +175,23 @@ public class MainCanvas extends JPanel{
 
     @Override
     public Dimension getSize(){
+
         return frame.getSize();
     }
     public void animateStep(){
-        for(Arc a: arcs)
-            a.setToken();
-        Timer timer = new Timer(30, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int count = 0;
-                for(Arc a: arcs){
-                    if(a.isDone()){
-                        a.disposeToken();
-                    }
-                    else if(a.isTokenSet()){
-                        count++;
-                        a.makeStep();
-                    }
-                    canvas.repaint();
-                }
-                if(count == 0)
-                    ((Timer)e.getSource()).stop();
+        Logic.setUp(transitions);
+        ArrayList<Arc> arr = Logic.firstStep();
 
-            }
-        });
+        for(Arc a: arr)
+            a.setToken();
+        Timer timer = new Timer(30,new AnimationListener(arr));
+        timer.start();
+        arr = Logic.secondStep();
+        for(Arc a: arr){
+            a.setToken();
+        }
+        timer = new Timer(30, new AnimationListener(arr));
+        timer.setInitialDelay(750);
         timer.start();
     }
     public void play(){
@@ -263,5 +199,28 @@ public class MainCanvas extends JPanel{
     }
     public void stop(){
 
+    }
+    class AnimationListener implements ActionListener{
+        ArrayList<Arc> arrToAnimate;
+        AnimationListener(ArrayList<Arc> arrToAnimate){
+            this.arrToAnimate = arrToAnimate;
+        }
+        @Override
+        public void actionPerformed(ActionEvent e){
+            int count = 0;
+            for(Arc a: arrToAnimate){
+                if(a.isDone()){
+                    a.disposeToken();
+                }
+                else if(a.isTokenSet()){
+                    count++;
+                    a.makeStep();
+                }
+                canvas.repaint();
+            }
+            if(count == 0){
+                ((Timer)e.getSource()).stop();
+            }
+        }
     }
 }
