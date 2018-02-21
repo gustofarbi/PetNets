@@ -3,6 +3,7 @@ import PetriElements.PlaceCore;
 import PetriElements.Transition;
 import PetriElements.TransitionCore;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 public class Logic {
@@ -11,17 +12,22 @@ public class Logic {
 
     private static boolean isEnabled(Transition t){
         TransitionCore tc = t.getCore();
+        if(tc.getToThis().isEmpty())
+            return false;
         for(Arc a: tc.getToThis()){
             if(((PlaceCore)a.getFrom().getCore()).getTokens() < a.getWeight()){
                 return false;
             }
+            ((PlaceCore)a.getFrom().getCore()).setTokens(((PlaceCore) a.getFrom().getCore()).getTokens()-a.getWeight());
         }
         return true;
     }
     private static boolean canFire(Transition t){
         TransitionCore tc = t.getCore();
+        if(tc.getFromThis().isEmpty())
+            return false;
         for(Arc a: tc.getFromThis()){
-            if(((PlaceCore)a.getTo().getCore()).getTokens() + a.getWeight() > (((PlaceCore) a.getTo().getCore()).getCapacity())){
+            if(((PlaceCore)a.getTo().getCore()).getTokens() + a.getWeight() > (((PlaceCore) a.getTo().getCore()).getCapacity())) {
                 return false;
             }
         }
@@ -29,6 +35,10 @@ public class Logic {
     }
     private static void checkTransitions(ArrayList<Transition> arr){
         for(Transition t: arr){
+            if(t.getCore().getFromThis().isEmpty() || t.getCore().getToThis().isEmpty()){
+                JOptionPane.showMessageDialog(null, "Net must be terminated by places on both sides!");
+                throw new RuntimeException("Not terminated properly!");
+            }
             if(Logic.isEnabled(t) && Logic.canFire(t)){
                 Logic.ret.add(t);
             }
@@ -47,9 +57,6 @@ public class Logic {
         ArrayList<Arc> first = new ArrayList<>();
         for(Transition t: Logic.ret){
             first.addAll(t.getCore().getToThis());
-        }
-        for(Arc a: first){
-            ((PlaceCore)a.getFrom().getCore()).setTokens(((PlaceCore)a.getFrom().getCore()).getTokens() - a.getWeight());
         }
         return first;
     }

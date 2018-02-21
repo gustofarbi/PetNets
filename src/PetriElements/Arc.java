@@ -123,7 +123,7 @@ public class Arc extends JComponent {
         g2.setStroke(new BasicStroke(2.0f));
         Point textPos = getTextPos();
         g2.setFont(new Font("Arial", Font.PLAIN, 14));
-        g2.drawString("ID: " + ID, textPos.x+offset,textPos.y+offset);
+        g2.drawString(weight + "", textPos.x+offset,textPos.y+offset);
         if(token != null){
             g2.fill(token);
         }

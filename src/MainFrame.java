@@ -58,6 +58,9 @@ public class MainFrame extends JFrame {
     public void setStats(String s){
         messageBar.setStats(s);
     }
+    public void newFile(){
+        canvas.clear();
+    }
 
     public static void main(String[] args) {
         MainFrame foo = new MainFrame();

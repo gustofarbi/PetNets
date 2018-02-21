@@ -22,14 +22,14 @@ public class PlaceCore implements PetriElement{
             tokens = t;
         else
             throw new RuntimeException("Invalid tokens input!@" + Thread.currentThread().getStackTrace()[2].getFileName()
-            + Thread.currentThread().getStackTrace()[2].getLineNumber());
+            + ":" + Thread.currentThread().getStackTrace()[2].getLineNumber());
     }
     public void setCapacity(int c){
         if(c > 0)
             capacity = c;
         else
             throw new RuntimeException("Invalid capacity input!@"
-                    + Thread.currentThread().getStackTrace()[2].getFileName()
+                    + Thread.currentThread().getStackTrace()[2].getFileName() + ""
                     + Thread.currentThread().getStackTrace()[2].getLineNumber());
     }
     @Override public void addToThis(Arc p){toThis.add(p);}

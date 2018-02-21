@@ -21,8 +21,10 @@ public class MainCanvas extends JPanel{
     private Arrow arr;
     @Nullable
     private Point arrowFrom;
+    private FileIO file;
 
     MainCanvas(MainFrame frame){
+        file = new FileIO(this);
         places = new ArrayList<>();
         transitions = new ArrayList<>();
         arcs = new ArrayList<>();
@@ -87,7 +89,7 @@ public class MainCanvas extends JPanel{
     }
     private void updateStats(){
         frame.setStats("Places: " + places.size() +
-        "   Transition: " + transitions.size() +
+        "   Transitions: " + transitions.size() +
         "   Arcs: " + arcs.size() + "   ");
     }
     public void eraseElement(Point p){
@@ -177,6 +179,12 @@ public class MainCanvas extends JPanel{
     public Dimension getSize(){
 
         return frame.getSize();
+    }
+    public void clear(){
+        arcs.clear();
+        places.clear();
+        transitions.clear();
+        canvas.repaint();
     }
     public void animateStep(){
         Logic.setUp(transitions);
