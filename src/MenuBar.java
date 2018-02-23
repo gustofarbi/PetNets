@@ -14,27 +14,33 @@ public class MenuBar {
         menu = new JMenu("File");
 
         menuItem = new JMenuItem("New");
-        menuItem.addActionListener(new MenuItemListener(frame));
+        menuItem.addActionListener(new MenuItemListener(frame.getFile()));
         menuItem.setActionCommand("new");
         menu.add(menuItem);
 
         menuItem = new JMenuItem("Open");
-        menuItem.addActionListener(new MenuItemListener(frame));
+        menuItem.addActionListener(new MenuItemListener(frame.getFile()));
         menuItem.setActionCommand("open");
         menu.add(menuItem);
 
         menuItem = new JMenuItem("Save");
-        menuItem.addActionListener(new MenuItemListener(frame));
+        menuItem.addActionListener(new MenuItemListener(frame.getFile()));
         menuItem.setActionCommand("save");
         menu.add(menuItem);
 
         menuItem = new JMenuItem("Save as");
-        menuItem.addActionListener(new MenuItemListener(frame));
+        menuItem.addActionListener(new MenuItemListener(frame.getFile()));
         menuItem.setActionCommand("save as");
         menu.add(menuItem);
+        menu.addSeparator();
 
         menuItem = new JMenuItem("Close project");
-        menuItem.addActionListener(new MenuItemListener(frame));
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.close();
+            }
+        });
         menuItem.setActionCommand("close");
         menu.add(menuItem);
 
@@ -44,29 +50,28 @@ public class MenuBar {
     }
 }
 class MenuItemListener implements ActionListener {
-    MainFrame frame;
-    MenuItemListener(MainFrame frame){
-        this.frame = frame;
+    FileIO file;
+    MenuItemListener(FileIO file){
+        this.file = file;
     }
     @Override
-    public void actionPerformed(@NotNull ActionEvent e) {
+    public void actionPerformed(@NotNull ActionEvent e) throws RuntimeException {
         String str = e.getActionCommand();
         switch (str) {
             case "new":
-                frame.newFile();
+                file.clear();
                 break;
             case "open":
-                //openFile();
+                file.openFile();
                 break;
             case "save":
-                //saveFile();
+                file.saveFile();
                 break;
             case "save as":
-                //saveFileAs();
+                file.saveAs();
                 break;
-            case "close":
-                //close();
-                break;
+            default:
+                throw new RuntimeException("Error at menubar-switch!");
         }
     }
 }

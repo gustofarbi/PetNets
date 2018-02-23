@@ -31,7 +31,6 @@ public class MainCanvas extends JPanel{
         this.frame = frame;
         this.setLayout(null);
         this.setBackground(Color.white);
-        this.updateStats();
         foreground = new ControlPanel(this);
         this.add(foreground);
         this.addComponentListener(new ComponentAdapter() {
@@ -46,28 +45,16 @@ public class MainCanvas extends JPanel{
 
 
     @NotNull GraphicPetriElement findElememnt(@NotNull Point point) throws RuntimeException {
-        for(Place p: places){
-            if(p.getBounds().contains(point))
-                return p;
-        }
-        for(Transition t: transitions){
-            if(t.getBounds().contains(point)) return t;
-        }
-        throw new RuntimeException("No element found");
-    }
-    private boolean isDuplicate(Arc f){
-        for(Arc foo: arcs)
-            if(foo.equals(f)) return true;
-        return false;
+        return file.findElement(point);
     }
     public void addArc(@NotNull GraphicPetriElement from, @NotNull GraphicPetriElement to) throws RuntimeException{
         Arc f = new Arc(from, to);
-        if(isDuplicate(f)){
+        if(file.isDuplicate(f)){
             frame.setMessage("Arc already exists!");
             throw new RuntimeException("Arc already exists!");
         }
         else {
-            arcs.add(f);
+            file.addArc(f);
             this.add(f);
             System.out.println("Arc added");
             updateStats();
@@ -75,37 +62,27 @@ public class MainCanvas extends JPanel{
     }
     public void addPlace(int x, int y){
         Place p = new Place(x,y);
-        places.add(p);
+        file.addPlace(p);
         this.add(p);
         System.out.println("Place added@ " + x + ":" + y);
         updateStats();
     }
     public void addTransition(int x, int y){
         Transition t = new Transition(x,y);
-        transitions.add(t);
+        file.addTransition(t);
         this.add(t);
         System.out.println("Transition added@" + x + ":" + y);
         updateStats();
     }
     private void updateStats(){
-        frame.setStats("Places: " + places.size() +
-        "   Transitions: " + transitions.size() +
-        "   Arcs: " + arcs.size() + "   ");
+        frame.setStats("Places: " + file.places.size() +
+        "   Transitions: " + file.transitions.size() +
+        "   Arcs: " + file.arcs.size() + "   ");
     }
     public void eraseElement(Point p){
         System.out.println("Erasing element");
-        try{
-            GraphicPetriElement g = findElememnt(p);
-            for(Arc a: g.getCore().getFromThis())
-                arcs.remove(a);
-            for(Arc a: g.getCore().getToThis())
-                arcs.remove(a);
-            if(g.getClass() == Place.class) places.remove(g);
-            else if(g.getClass() == Transition.class) transitions.remove(g);
-            updateStats();
-        }catch (Exception err) {
-            System.err.println(err.getMessage());
-        }
+        file.eraseElement(p);
+        updateStats();
     }
 
     public String getToggled(){
@@ -161,14 +138,14 @@ public class MainCanvas extends JPanel{
     @Override
     public void paintComponent(@NotNull Graphics g){
         super.paintComponent(g);
-        for(Arc f: arcs){
+        for(Arc f: file.arcs){
             f.draw(g);
         }
-        for(Place p: places) {
+        for(Place p: file.places) {
             p.draw(g);
             p.setBounds(p.getPos().x-30, p.getPos().y-30, 60,60);
         }
-        for(Transition t: transitions){
+        for(Transition t: file.transitions){
             t.draw(g);
             t.setBounds(t.getPos().x-30, t.getPos().y-30, 60,60);
         }
@@ -180,27 +157,29 @@ public class MainCanvas extends JPanel{
 
         return frame.getSize();
     }
-    public void clear(){
-        arcs.clear();
-        places.clear();
-        transitions.clear();
-        canvas.repaint();
+    public FileIO getFile(){
+        return this.file;
     }
-    public void animateStep(){
-        Logic.setUp(transitions);
-        ArrayList<Arc> arr = Logic.firstStep();
 
-        for(Arc a: arr)
-            a.setToken();
-        Timer timer = new Timer(30,new AnimationListener(arr));
-        timer.start();
-        arr = Logic.secondStep();
-        for(Arc a: arr){
-            a.setToken();
+    public void animateStep(){
+        Logic.setUp(file.transitions);
+        if(!Logic.stepPossible()){
+            System.out.println("Step impossible");
+        }else {
+            ArrayList<Arc> arr = Logic.firstStep();
+
+            for (Arc a : arr)
+                a.setToken();
+            Timer timer = new Timer(30, new AnimationListener(arr));
+            timer.start();
+            arr = Logic.secondStep();
+            for (Arc a : arr) {
+                a.setToken();
+            }
+            timer = new Timer(30, new AnimationListener(arr));
+            timer.setInitialDelay(800);
+            timer.start();
         }
-        timer = new Timer(30, new AnimationListener(arr));
-        timer.setInitialDelay(750);
-        timer.start();
     }
     public void play(){
 

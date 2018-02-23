@@ -9,11 +9,11 @@ class MessageBar {
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        message = new JLabel("Message1");
+        message = new JLabel("");
         message.setPreferredSize(new Dimension(600, 30));
         message.setFont(new Font("Arial", Font.PLAIN, 18));
 
-        stats = new JLabel("message2", SwingConstants.RIGHT);
+        stats = new JLabel("", SwingConstants.RIGHT);
         stats.setPreferredSize(new Dimension(600, 30));
         stats.setFont(new Font("Arial", Font.PLAIN, 18));
 

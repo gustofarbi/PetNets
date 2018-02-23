@@ -44,7 +44,7 @@ class ControlPanel extends JPanel{
                     System.out.println("tokens added/removed");
                 }
                 else if(e.getClickCount() == 2) {
-                    new PlaceContextMenu((Place) foo);
+                    new PlaceArcContextMenu((Place) foo);
                     canvas.repaint();
                 }
             }

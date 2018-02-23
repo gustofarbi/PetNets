@@ -44,6 +44,9 @@ public class Logic {
             }
         }
     }
+    public static boolean stepPossible(){
+        return !ret.isEmpty();
+    }
     private static void dispose(){ret = null;}
     public static void setUp(ArrayList<Transition> arr){
         Logic.ret = new ArrayList<>();

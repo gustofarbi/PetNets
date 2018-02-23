@@ -19,10 +19,11 @@ public class MainFrame extends JFrame {
         setTitle("PetNets v1.1");
         setLocation(100,100);
 
+        canvas = new MainCanvas(this);
         MenuBar.makeMenuBar(this);
         ToolBar.makeToolBar(this);
         messageBar = new MessageBar(this);
-        canvas = new MainCanvas(this);
+
 
         try{
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
@@ -58,8 +59,13 @@ public class MainFrame extends JFrame {
     public void setStats(String s){
         messageBar.setStats(s);
     }
-    public void newFile(){
-        canvas.clear();
+    public void close(){
+        this.setVisible(false);
+        this.dispose();
+    }
+
+    public FileIO getFile(){
+        return canvas.getFile();
     }
 
     public static void main(String[] args) {

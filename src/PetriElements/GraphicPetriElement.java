@@ -8,4 +8,5 @@ public interface GraphicPetriElement {
     @NotNull Point getPos();
     void setPos(int x, int y);
     PetriElement getCore();
+    String getName();
 }
