@@ -27,6 +27,7 @@ public class Place extends JComponent implements GraphicPetriElement {
     @Override public Point getPos(){ return new Point(xPos,yPos); }
     @Override public void setPos(int x, int y){ xPos = x;yPos = y; }
     @Override public PetriElement getCore(){return core;}
+
     private void setImage(){
         try{
             bi = ImageIO.read(getClass().getResource("/ressources/images/place.png"));

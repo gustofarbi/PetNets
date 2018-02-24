@@ -16,6 +16,7 @@ public class Logic {
             return false;
         for(Arc a: tc.getToThis()){
             if(((PlaceCore)a.getFrom().getCore()).getTokens() < a.getWeight()){
+                System.out.println("tokens<weight@" + a.getID());
                 return false;
             }
             ((PlaceCore)a.getFrom().getCore()).setTokens(((PlaceCore) a.getFrom().getCore()).getTokens()-a.getWeight());
@@ -39,15 +40,16 @@ public class Logic {
                 JOptionPane.showMessageDialog(null, "Net must be terminated by places on both sides!");
                 throw new RuntimeException("Not terminated properly!");
             }
-            if(Logic.isEnabled(t) && Logic.canFire(t)){
+            else if(Logic.isEnabled(t) && Logic.canFire(t)){
                 Logic.ret.add(t);
             }
         }
     }
     public static boolean stepPossible(){
-        return !ret.isEmpty();
+        return !Logic.ret.isEmpty();
     }
-    private static void dispose(){ret = null;}
+    public static boolean isSet(){return Logic.ret != null;}
+    private static void dispose(){Logic.ret = null;}
     public static void setUp(ArrayList<Transition> arr){
         Logic.ret = new ArrayList<>();
         Logic.checkTransitions(arr);

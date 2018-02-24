@@ -9,6 +9,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MainCanvas extends JPanel{
     private ArrayList<Place> places;
@@ -22,6 +25,7 @@ public class MainCanvas extends JPanel{
     @Nullable
     private Point arrowFrom;
     private FileIO file;
+    private ScheduledExecutorService executorService;
 
     MainCanvas(MainFrame frame){
         file = new FileIO(this);
@@ -78,6 +82,9 @@ public class MainCanvas extends JPanel{
         frame.setStats("Places: " + file.places.size() +
         "   Transitions: " + file.transitions.size() +
         "   Arcs: " + file.arcs.size() + "   ");
+    }
+    public void setMessage(String msg){
+        frame.setMessage(msg);
     }
     public void eraseElement(Point p){
         System.out.println("Erasing element");
@@ -162,30 +169,34 @@ public class MainCanvas extends JPanel{
     }
 
     public void animateStep(){
-        Logic.setUp(file.transitions);
+        final int delay = 20;
+        if(!Logic.isSet())
+            Logic.setUp(file.transitions);
         if(!Logic.stepPossible()){
-            System.out.println("Step impossible");
+            executorService.shutdown();
+            JOptionPane.showMessageDialog(null, "Another step is not possible!");
         }else {
             ArrayList<Arc> arr = Logic.firstStep();
 
             for (Arc a : arr)
                 a.setToken();
-            Timer timer = new Timer(30, new AnimationListener(arr));
+            Timer timer = new Timer(delay, new AnimationListener(arr));
             timer.start();
             arr = Logic.secondStep();
             for (Arc a : arr) {
                 a.setToken();
             }
-            timer = new Timer(30, new AnimationListener(arr));
-            timer.setInitialDelay(800);
+            timer = new Timer(delay, new AnimationListener(arr));
+            timer.setInitialDelay(1000);
             timer.start();
         }
     }
     public void play(){
-
+        executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(this::animateStep, 0, 2500, TimeUnit.MILLISECONDS);
     }
     public void stop(){
-
+        executorService.shutdown();
     }
     class AnimationListener implements ActionListener{
         ArrayList<Arc> arrToAnimate;

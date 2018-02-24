@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class FileIO {
 
@@ -45,6 +46,9 @@ public class FileIO {
         try{
             Element project = new Element("project");
             Document doc = new Document(project);
+
+            Date now = new Date();
+            project.setAttribute("timestamp", now.getTime() + "");
 
             Element placesE = new Element("places");
             for(Place p: places){
@@ -84,6 +88,7 @@ public class FileIO {
 
             output.setFormat(Format.getPrettyFormat());
             output.output(doc, new FileOutputStream(file));
+            canvas.setMessage("File saved.@ " + now);
         }
         catch(IOException e){
             e.printStackTrace();
@@ -115,6 +120,11 @@ public class FileIO {
             addArcs(arcsE);
 
             canvas.repaint();
+            Attribute timeStamp = rootElement.getAttribute("timestamp");
+            System.out.println("timestamp " + timeStamp.getValue());
+            Date fileDate = new Date();
+            fileDate.setTime(Long.parseLong(timeStamp.getValue()));
+            canvas.setMessage("File from " + fileDate + " was opened.");
         }
         catch(JDOMException e){
             e.printStackTrace();
@@ -202,10 +212,16 @@ public class FileIO {
     public void eraseElement(Point point){
         try {
             GraphicPetriElement g = findElement(point);
-            for (Arc a : g.getCore().getToThis())
-                arcs.remove(a);
-            for (Arc a : g.getCore().getFromThis())
-                arcs.remove(a);
+            for(Arc a: g.getCore().getToThis()){
+                GraphicPetriElement foo = a.getFrom();
+                foo.getCore().getFromThis().remove(a);
+            }
+            for(Arc a: g.getCore().getFromThis()){
+                GraphicPetriElement foo = a.getTo();
+                foo.getCore().getToThis().remove(a);
+            }
+            arcs.removeAll(g.getCore().getFromThis());
+            arcs.removeAll(g.getCore().getToThis());
             if (g.getClass() == Place.class)
                 places.remove(g);
             else if (g.getClass() == Transition.class)
