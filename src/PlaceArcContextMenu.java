@@ -88,10 +88,7 @@ public class PlaceArcContextMenu extends JDialog {
 
             @Override
             public boolean isCellEditable(int row, int col){
-                if(col > 2 && row > 0)
-                    return true;
-                else
-                    return false;
+                return col > 2 && row > 0;
             }
 
             @Override
@@ -100,12 +97,7 @@ public class PlaceArcContextMenu extends JDialog {
                 fireTableCellUpdated(row,col);
             }
         };
-        model.addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(TableModelEvent e) {
 
-            }
-        });
         arcsTable.setModel(model);
 
         pack();

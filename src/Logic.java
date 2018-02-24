@@ -16,7 +16,6 @@ public class Logic {
             return false;
         for(Arc a: tc.getToThis()){
             if(((PlaceCore)a.getFrom().getCore()).getTokens() < a.getWeight()){
-                System.out.println("tokens<weight@" + a.getID());
                 return false;
             }
             ((PlaceCore)a.getFrom().getCore()).setTokens(((PlaceCore) a.getFrom().getCore()).getTokens()-a.getWeight());
@@ -38,7 +37,6 @@ public class Logic {
         for(Transition t: arr){
             if(t.getCore().getFromThis().isEmpty() || t.getCore().getToThis().isEmpty()){
                 JOptionPane.showMessageDialog(null, "Net must be terminated by places on both sides!");
-                throw new RuntimeException("Not terminated properly!");
             }
             else if(Logic.isEnabled(t) && Logic.canFire(t)){
                 Logic.ret.add(t);

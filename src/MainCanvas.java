@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -14,9 +13,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class MainCanvas extends JPanel{
-    private ArrayList<Place> places;
-    private ArrayList<Transition> transitions;
-    private ArrayList<Arc> arcs;
     private MainFrame frame;
     private MainCanvas canvas = this;
     private ControlPanel foreground;
@@ -29,9 +25,6 @@ public class MainCanvas extends JPanel{
 
     MainCanvas(MainFrame frame){
         file = new FileIO(this);
-        places = new ArrayList<>();
-        transitions = new ArrayList<>();
-        arcs = new ArrayList<>();
         this.frame = frame;
         this.setLayout(null);
         this.setBackground(Color.white);
@@ -97,7 +90,7 @@ public class MainCanvas extends JPanel{
     }
     public void setArrow(Point p){
         if(arr == null && arrowFrom != null) arr = new Arrow(arrowFrom, p);
-        else arr.setArrow(p);
+        else if(arrowFrom != null) arr.setArrow(p);
     }
     public void setArrowFrom(@Nullable Point p){
         arrowFrom = p;
@@ -170,10 +163,10 @@ public class MainCanvas extends JPanel{
 
     public void animateStep(){
         final int delay = 20;
-        if(!Logic.isSet())
-            Logic.setUp(file.transitions);
+        Logic.setUp(file.transitions);
         if(!Logic.stepPossible()){
-            executorService.shutdown();
+            if(executorService != null)
+                executorService.shutdown();
             JOptionPane.showMessageDialog(null, "Another step is not possible!");
         }else {
             ArrayList<Arc> arr = Logic.firstStep();
@@ -192,11 +185,16 @@ public class MainCanvas extends JPanel{
         }
     }
     public void play(){
-        executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleAtFixedRate(this::animateStep, 0, 2500, TimeUnit.MILLISECONDS);
+        if(executorService == null) {
+            executorService = Executors.newSingleThreadScheduledExecutor();
+            executorService.scheduleAtFixedRate(this::animateStep, 0, 2500, TimeUnit.MILLISECONDS);
+        }
     }
     public void stop(){
-        executorService.shutdown();
+        if(executorService != null) {
+            executorService.shutdown();
+            executorService = null;
+        }
     }
     class AnimationListener implements ActionListener{
         ArrayList<Arc> arrToAnimate;

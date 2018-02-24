@@ -39,9 +39,10 @@ public class FileIO {
         if(file == null){
             final JFileChooser fc = new JFileChooser();
             int retVal = fc.showSaveDialog(canvas);
-            if(retVal == JFileChooser.APPROVE_OPTION){
+            if(retVal == JFileChooser.APPROVE_OPTION)
                 file = fc.getSelectedFile();
-            }
+            else
+                return;
         }
         try{
             Element project = new Element("project");
@@ -102,9 +103,10 @@ public class FileIO {
         clear();
         final JFileChooser fc = new JFileChooser();
         int retVal = fc.showOpenDialog(canvas);
-        if(retVal == JFileChooser.APPROVE_OPTION){
+        if(retVal == JFileChooser.APPROVE_OPTION)
             file = fc.getSelectedFile();
-        }
+        else
+            return;
         try{
             SAXBuilder builder = new SAXBuilder();
             Document doc = builder.build(file);
@@ -126,10 +128,7 @@ public class FileIO {
             fileDate.setTime(Long.parseLong(timeStamp.getValue()));
             canvas.setMessage("File from " + fileDate + " was opened.");
         }
-        catch(JDOMException e){
-            e.printStackTrace();
-        }
-        catch(IOException e){
+        catch(JDOMException | IOException e){
             e.printStackTrace();
         }
     }
@@ -155,8 +154,6 @@ public class FileIO {
             }
         }catch (DataConversionException err){
             err.printStackTrace();
-        }catch (Exception err) {
-            System.err.println("Something went wrong @" + err.getMessage());
         }
     }
     private void addTransitions(Element tE){
@@ -178,8 +175,6 @@ public class FileIO {
 
         }catch(DataConversionException err) {
             err.printStackTrace();
-        }catch(Exception e){
-            System.err.println("Something went wrong @adding transitions\n" + e.getMessage());
         }
     }
     private void addPlaces(Element pE){
@@ -204,8 +199,6 @@ public class FileIO {
             }
         }catch(DataConversionException err){
             err.printStackTrace();
-        }catch(Exception err){
-            System.err.println("Something went wrong @adding places\n" + err.getMessage());
         }
     }
 

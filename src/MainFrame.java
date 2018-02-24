@@ -12,7 +12,7 @@ public class MainFrame extends JFrame {
     private MainCanvas canvas;
     private MessageBar messageBar;
 
-    MainFrame(){
+    private MainFrame(){
         setSize(1200,800);
         setSize(getPreferredSize());
         setBackground(Color.white);
@@ -69,6 +69,12 @@ public class MainFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        MainFrame foo = new MainFrame();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new MainFrame();
+            }
+        });
+        //MainFrame foo = new MainFrame();
     }
 }

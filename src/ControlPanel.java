@@ -112,7 +112,8 @@ class ControlPanel extends JPanel{
                 }
                 if(draggedElement != null) {
                     draggedElement.setPos(e.getX(),e.getY());
-                    canvas.repaint();
+                    //canvas.repaint();
+                    canvas.repaint(e.getX()-30, e.getY()-30, 60,60);
                 }
             }
         }

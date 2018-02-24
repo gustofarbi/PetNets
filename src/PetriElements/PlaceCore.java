@@ -10,7 +10,7 @@ public class PlaceCore implements PetriElement{
     private ArrayList<Arc> fromThis;
     @NotNull
     private ArrayList<Arc> toThis;
-    public PlaceCore(){
+    PlaceCore(){
         fromThis = new ArrayList<>();
         toThis = new ArrayList<>();
     }
