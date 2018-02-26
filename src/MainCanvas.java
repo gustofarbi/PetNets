@@ -71,7 +71,7 @@ public class MainCanvas extends JPanel{
         System.out.println("Transition added@" + x + ":" + y);
         updateStats();
     }
-    private void updateStats(){
+    public void updateStats(){
         frame.setStats("Places: " + file.places.size() +
         "   Transitions: " + file.transitions.size() +
         "   Arcs: " + file.arcs.size() + "   ");

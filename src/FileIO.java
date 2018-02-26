@@ -100,37 +100,40 @@ public class FileIO {
         saveFile();
     }
     public void openFile(){
-        clear();
         final JFileChooser fc = new JFileChooser();
         int retVal = fc.showOpenDialog(canvas);
-        if(retVal == JFileChooser.APPROVE_OPTION)
+        if(retVal == JFileChooser.APPROVE_OPTION) {
             file = fc.getSelectedFile();
+            clear();
+            try{
+                SAXBuilder builder = new SAXBuilder();
+                Document doc = builder.build(file);
+                Element rootElement = doc.getRootElement();
+
+                Element placesE = rootElement.getChild("places");
+                Element transitionsE = rootElement.getChild("transitions");
+                Element arcsE = rootElement.getChild("arcs");
+
+                addPlaces(placesE);
+                addTransitions(transitionsE);
+                canvas.repaint();
+                addArcs(arcsE);
+
+                canvas.repaint();
+                canvas.updateStats();
+                Attribute timeStamp = rootElement.getAttribute("timestamp");
+                System.out.println("timestamp " + timeStamp.getValue());
+                Date fileDate = new Date();
+                fileDate.setTime(Long.parseLong(timeStamp.getValue()));
+                canvas.setMessage("File from " + fileDate + " was opened.");
+            }
+            catch(JDOMException | IOException e){
+                e.printStackTrace();
+            }
+        }
         else
             return;
-        try{
-            SAXBuilder builder = new SAXBuilder();
-            Document doc = builder.build(file);
-            Element rootElement = doc.getRootElement();
 
-            Element placesE = rootElement.getChild("places");
-            Element transitionsE = rootElement.getChild("transitions");
-            Element arcsE = rootElement.getChild("arcs");
-
-            addPlaces(placesE);
-            addTransitions(transitionsE);
-            canvas.repaint();
-            addArcs(arcsE);
-
-            canvas.repaint();
-            Attribute timeStamp = rootElement.getAttribute("timestamp");
-            System.out.println("timestamp " + timeStamp.getValue());
-            Date fileDate = new Date();
-            fileDate.setTime(Long.parseLong(timeStamp.getValue()));
-            canvas.setMessage("File from " + fileDate + " was opened.");
-        }
-        catch(JDOMException | IOException e){
-            e.printStackTrace();
-        }
     }
     private void addArcs(Element aE){
         java.util.List<Element> arcsE = aE.getChildren();

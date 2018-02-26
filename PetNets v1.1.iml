@@ -16,6 +16,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="jdom" level="project" />
+    <orderEntry type="library" exported="" name="jdom" level="project" />
   </component>
 </module>
