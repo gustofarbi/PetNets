@@ -27,7 +27,7 @@ public class FileIO {
         arcs = new ArrayList<>();
     }
     public void addPlace(Place p){places.add(p);}
-    public void addTransition(Transition t){transitions.add(t);t.setBounds(t.getPos().x-30, t.getPos().y-30, 60,60);}
+    public void addTransition(Transition t){transitions.add(t);}
     public void addArc(Arc a){arcs.add(a);}
     public void clear(){
         arcs.clear();
@@ -131,9 +131,6 @@ public class FileIO {
                 e.printStackTrace();
             }
         }
-        else
-            return;
-
     }
     private void addArcs(Element aE){
         java.util.List<Element> arcsE = aE.getChildren();
