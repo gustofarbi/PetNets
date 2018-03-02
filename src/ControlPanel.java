@@ -1,6 +1,4 @@
-import PetriElements.GraphicPetriElement;
-import PetriElements.Place;
-import PetriElements.PlaceCore;
+import PetriElements.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,20 +31,25 @@ class ControlPanel extends JPanel{
             }catch(Exception err){
                 System.err.println(err.getMessage());
             }
-            //Shows PlaceContextMenu or adds/removes tokens from place
-            if(foo != null && foo.getClass() == Place.class){
-                if(canvas.getToggled().equals("token")){
-                    PlaceCore pc = (PlaceCore)foo.getCore();
-                    if(e.getButton() == MouseEvent.BUTTON3)
-                        pc.setTokens(pc.getTokens()-1 >= 0 ? pc.getTokens()-1 : 0);
-                    else if(e.getButton() == MouseEvent.BUTTON1)
-                        pc.setTokens(pc.getTokens()+1);
-                    System.out.println("tokens added/removed");
+
+            if(foo != null){
+                //Shows PlaceContextMenu or adds/removes tokens from place
+                if(foo.getClass() == Place.class) {
+                    if (canvas.getToggled().equals("token")) {
+                        PlaceCore pc = (PlaceCore) foo.getCore();
+                        if (e.getButton() == MouseEvent.BUTTON3)
+                            pc.setTokens(pc.getTokens() - 1 >= 0 ? pc.getTokens() - 1 : 0);
+                        else if (e.getButton() == MouseEvent.BUTTON1)
+                            pc.setTokens(pc.getTokens() + 1);
+                        System.out.println("tokens added/removed");
+                    } else if (e.getClickCount() == 2) {
+                        new PlaceArcContextMenu((Place) foo);
+                        canvas.repaint();
+                    }
                 }
-                else if(e.getClickCount() == 2) {
-                    PlaceArcContextMenu contextMenu = new PlaceArcContextMenu((Place)foo);
-                    contextMenu.setLocation(500,500);
-                    contextMenu.setLocationRelativeTo(canvas);
+                //Shows TransitionContextMenu
+                else if(foo.getClass() == Transition.class && e.getClickCount() == 2){
+                    new TransitionContextMenu((Transition) foo);
                     canvas.repaint();
                 }
             }
@@ -112,8 +115,12 @@ class ControlPanel extends JPanel{
                 }
                 if(draggedElement != null) {
                     draggedElement.setPos(e.getX(),e.getY());
+                    for(Arc a: draggedElement.getCore().getFromThis())
+                        a.repaint();
+                    for(Arc a: draggedElement.getCore().getToThis())
+                        a.repaint();
+                    //canvas.repaint(e.getX()-30, e.getY()-30, 60,60);
                     //canvas.repaint();
-                    canvas.repaint(e.getX()-30, e.getY()-30, 60,60);
                 }
             }
         }

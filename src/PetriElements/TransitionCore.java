@@ -2,7 +2,7 @@ package PetriElements;
 
 import java.util.ArrayList;
 
-public class TransitionCore implements PetriElement {
+public class TransitionCore implements PetriElementCore {
     private ArrayList<Arc> fromThis;
     private ArrayList<Arc> toThis;
     TransitionCore(){

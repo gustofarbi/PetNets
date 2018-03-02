@@ -24,13 +24,13 @@ public class MainFrame extends JFrame {
         ToolBar.makeToolBar(this);
         messageBar = new MessageBar(this);
 
-
         try{
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         }catch (Exception e){
             e.printStackTrace();
         }
         SwingUtilities.updateComponentTreeUI(this);
+
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {

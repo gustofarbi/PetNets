@@ -162,7 +162,7 @@ public class MainCanvas extends JPanel{
     }
 
     public void animateStep(){
-        final int delay = 20;
+        final int delay = 50;
         Logic.setUp(file.transitions);
         if(!Logic.stepPossible()){
             if(executorService != null)
@@ -187,7 +187,7 @@ public class MainCanvas extends JPanel{
     public void play(){
         if(executorService == null) {
             executorService = Executors.newSingleThreadScheduledExecutor();
-            executorService.scheduleAtFixedRate(this::animateStep, 0, 2500, TimeUnit.MILLISECONDS);
+            executorService.scheduleAtFixedRate(this::animateStep, 0, 5000, TimeUnit.MILLISECONDS);
         }
     }
     public void stop(){

@@ -102,8 +102,6 @@ public class PlaceArcContextMenu extends JDialog {
 
         pack();
         setVisible(true);
-        setLocation(500,500);
-
     }
 
     private void onOK() {

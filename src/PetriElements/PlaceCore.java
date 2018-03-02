@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class PlaceCore implements PetriElement{
+public class PlaceCore implements PetriElementCore {
     private int tokens = 0, capacity = Integer.MAX_VALUE;
     @NotNull
     private ArrayList<Arc> fromThis;
