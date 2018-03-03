@@ -24,6 +24,11 @@ public class Arc extends JComponent {
     private boolean isDone = false;
     private double tokenPosX, tokenPosY;
 
+    /**
+     * Ctor: zeichnet die Kante und fuegt sie in ArrayLists von start und end
+     * @param start GraphicPetriElement Anfangspetrielement
+     * @param end GraphicPetriElement Endpetrielement
+     */
     public Arc(GraphicPetriElement start, GraphicPetriElement end){
         if(start.getClass() == end.getClass()) {
             throw new RuntimeException("Start element is the same as end element!@"
@@ -43,15 +48,38 @@ public class Arc extends JComponent {
         line = new Line2D.Double(fromPos.x, fromPos.y, toPos.x, toPos.y);
         if(arrowHead == null) makeArrowHead();
     }
+
+    /**
+     * Gibt ID-Nummer der Kante zurück
+     * @return int ID der Kante
+     */
     public int getID(){return ID;}
+
+    /**
+     * Setzt gewicht neu
+     * @param w int gewichtNeu
+     */
     public void setWeight(int w){ if(w > 0) weight = w; }
+
+    /**
+     * Gibt das Kantengewicht zurück
+     * @return int gewicht
+     */
     public int getWeight(){return weight;}
+
+    /**
+     * Zeichnet die Pfeilspitze
+     */
     private void makeArrowHead(){
         arrowHead = new Polygon();
         arrowHead.addPoint(0,5);
         arrowHead.addPoint(-5,-5);
         arrowHead.addPoint(5,-5);
     }
+
+    /**
+     * Aktualisiert die Position von Kante und deren Spitze
+     */
     private void refreshPosition(){
         fromPos = from.getPos();
         toPos = to.getPos();
@@ -63,19 +91,50 @@ public class Arc extends JComponent {
         at.rotate(angle-Math.PI/2d);
 
     }
+
+    /**
+     * Gibt die Position des Anfangselements zurück
+     * @return Point positionFrom
+     */
     public Point getFromPos(){return fromPos;}
+
+    /**
+     * Gibt die Position des Endelements zurück
+     * @return Point positionTo
+     */
     public Point getToPos(){return toPos;}
+
+    /**
+     * Gibt das Anfangselement zurück
+     * @return GraphicPetriElement from
+     */
     public GraphicPetriElement getFrom(){
         return from;
     }
 
+    /**
+     * Gibt das Endelement zurück
+     * @return GraphicPetriElement to
+     */
     public GraphicPetriElement getTo() {
         return to;
     }
 
+    /**
+     * Gibt die Textposition zurück
+     * @return Point Textposition
+     */
     private Point getTextPos(){ return new Point((fromPos.x+toPos.x)/2, (fromPos.y+toPos.y)/2); }
 
+    /**
+     * Prueft ob das Token zu weit ist
+     * @return boolean, true wenn das Token zu weit ist
+     */
     public boolean isDone(){return isDone;}
+
+    /**
+     * Initialisiert das Token und die Schrittlaenge
+     */
     public void setToken(){
         token = new Ellipse2D.Double(fromPos.x-radius, fromPos.y-radius, diameter, diameter);
         stepX = (double)(relPos.x-fromPos.x)/(double)speed;
@@ -83,6 +142,10 @@ public class Arc extends JComponent {
         tokenPosX = fromPos.x;
         tokenPosY = fromPos.y;
     }
+
+    /**
+     * Macht ein Schritt in Richtung Endelement
+     */
     public void makeStep(){
         if(relPos.distance(tokenPosX, tokenPosY) < 50)
             isDone = true;
@@ -92,14 +155,27 @@ public class Arc extends JComponent {
             token.setFrame(tokenPosX - radius, tokenPosY - radius, diameter, diameter);
         }
     }
+
+    /**
+     * Zersoert das Token
+     */
     public void disposeToken(){
         token.setFrame(0,0,0,0);
         token = null;
         isDone = false;
     }
+
+    /**
+     * Prueft ob das Token gesetzt ist
+     * @return boolean, true wenn Token gesetzt ist
+     */
     public boolean isTokenSet(){
         return token != null;
     }
+
+    /**
+     * Positioniert die Kante relativ zum Endelement (Am Rand)
+     */
     private void relPos(){
         relPos = new Point();
         if(fromPos.x > toPos.x)
@@ -111,6 +187,11 @@ public class Arc extends JComponent {
         else
             relPos.y = toPos.y - offset;
     }
+
+    /**
+     * Zeichnet die Kante und, wenn gesetzt, das Token
+     * @param g Graphics-Objekt
+     */
     public void draw(Graphics g){
         refreshPosition();
         Graphics2D g2 = (Graphics2D) g.create();
@@ -133,6 +214,11 @@ public class Arc extends JComponent {
         g2.dispose();
     }
 
+    /**
+     * Prueft zwei Kanten auf Gleichheit
+     * @param o Vergleichsobjekt
+     * @return boolean, true wenn zwei Objekte gleich sind
+     */
     @Override
     public boolean equals(Object o) {
         if(!(o instanceof Arc))

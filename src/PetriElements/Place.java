@@ -21,12 +21,13 @@ public class Place extends JComponent implements GraphicPetriElement {
         yPos = y;
         core = new PlaceCore();
     }
-    public String getName(){ return name; }
+
     public void setName(String nName){name = nName; }
     @NotNull
     @Override public Point getPos(){ return new Point(xPos,yPos); }
     @Override public void setPos(int x, int y){ xPos = x;yPos = y; }
     @Override public PetriElementCore getCore(){return core;}
+    @Override public String getName(){ return name; }
 
     private void setImage(){
         try{
