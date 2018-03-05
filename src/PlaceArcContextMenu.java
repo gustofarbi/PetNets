@@ -47,6 +47,7 @@ public class PlaceArcContextMenu extends JDialog {
         tokensField.setText(((PlaceCore)p.getCore()).getTokens() + "");
         capacityField.setText(((PlaceCore)p.getCore()).getCapacity() + "");
 
+        //Aufbau vom JTable
         String[] columnNames = {"ID", "From", "To", "Weight"};
         ArrayList<Arc> fromList = foo.getCore().getFromThis();
         ArrayList<Arc> toList = foo.getCore().getToThis();

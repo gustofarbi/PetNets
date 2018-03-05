@@ -15,6 +15,12 @@ public class Place extends JComponent implements GraphicPetriElement {
     private String name;
     private BufferedImage bi;
     private static int counter = 0;
+
+    /**
+     * Ctor - initialisiert Position und Name, und PetriElementCore-Objekt
+     * @param x int xPosition
+     * @param y int yPosition
+     */
     public Place(int x, int y){
         name = "P: " + ++counter;
         xPos = x;
@@ -22,14 +28,42 @@ public class Place extends JComponent implements GraphicPetriElement {
         core = new PlaceCore();
     }
 
+    /**
+     * Name-setter
+     * @param nName String neuer Name
+     */
     public void setName(String nName){name = nName; }
+
+    /**
+     * Getter, gibt Position als Point zurueck
+     * @return java.awt.Point Position
+     */
     @NotNull
     @Override public Point getPos(){ return new Point(xPos,yPos); }
+
+    /**
+     * Setter, setzt Position neu
+     * @param x int xKoordinate
+     * @param y int yKoordinate
+     */
     @Override public void setPos(int x, int y){ xPos = x;yPos = y; }
+
+    /**
+     * Getter, gibt PetriElementCore-Objekt zurueck
+     * @return PetriElementCore Kern
+     */
     @Override public PetriElementCore getCore(){return core;}
+
+    /**
+     * Getter, gibt Name als String zurück
+     * @return String Name
+     */
     @Override public String getName(){ return name; }
 
-    private void setImage(){
+    /**
+     * Initialisiert das Bild von Stelle und zeichnet auf Graphics2D-Objekt
+     */
+    private void imageInit(){
         try{
             bi = ImageIO.read(getClass().getResource("/ressources/images/place.png"));
         }
@@ -54,9 +88,18 @@ public class Place extends JComponent implements GraphicPetriElement {
         g.drawString("t: " + core.getTokens(), 12, 36);
     }
 
+    /**
+     * Funktion laesst Stellenbild initialisieren und setzt dessen Position
+     * @param g Graphics-Objekt
+     */
     public void draw(@NotNull Graphics g){
-        setImage();
+        imageInit();
         g.drawImage(bi, xPos-(size/2), yPos-(size/2), null);
     }
+
+    /**
+     * Funktion ueberladet void paintComponent(Graphics g) Methode von JComponent
+     * @param g Graphics-Objekt
+     */
     @Override public void paintComponents(@NotNull Graphics g){draw(g);}
 }

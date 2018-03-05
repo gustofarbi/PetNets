@@ -10,6 +10,10 @@ public class ToolBar {
     static ArrayList<JToggleButton> buttons;
     static MainFrame frame;
 
+    /**
+     * Ctor, initialisiert alle Buttons, zeichnet diese und setzt ActionCommands und ActionListener
+     * @param f aufrufendes MainFrame
+     */
     static void makeToolBar(MainFrame f){
         frame = f;
         int iconSize = 40;
@@ -195,9 +199,15 @@ public class ToolBar {
         toolBar.add(playButton, BorderLayout.SOUTH);
         toolBar.add(stopButton, BorderLayout.SOUTH);
 
+        //fuegt sich selber ins Container von MainFrame-Objekt
         frame.add(toolBar, BorderLayout.EAST);
     }
     static class ToggleButtonListener implements ActionListener{
+        /**
+         *
+         * @param e ActionEvent
+         * @throws RuntimeException beim ungueltigen ActionCommand
+         */
         @Override public void actionPerformed(ActionEvent e){
             JToggleButton source = (JToggleButton)e.getSource();
             for(JToggleButton b: buttons)
@@ -228,6 +238,11 @@ public class ToolBar {
         }
     }
     static class ButtonListener implements ActionListener{
+        /**
+         *
+         * @param e ActionEvent
+         * @throws RuntimeException beim ungueltigem ActionCommand
+         */
         @Override
         public void actionPerformed(ActionEvent e) throws RuntimeException{
             switch(e.getActionCommand()){

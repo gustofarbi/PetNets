@@ -7,6 +7,10 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 public class MenuBar {
+    /**
+     * Ctor, baut das Hauptmenue auf, setzt ActionCommands, -Listener und Tastenkuerzel
+     * @param frame
+     */
     static void makeMenuBar(MainFrame frame){
         JMenuItem menuItem;
         JMenuBar menuBar;

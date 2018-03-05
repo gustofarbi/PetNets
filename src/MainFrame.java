@@ -12,6 +12,9 @@ public class MainFrame extends JFrame {
     private MainCanvas canvas;
     private MessageBar messageBar;
 
+    /**
+     * Ctor, setzt Attribute und erzeugt MainCanvas, MessageBar und stellt laf ein
+     */
     private MainFrame(){
         setSize(1200,800);
         setSize(getPreferredSize());
@@ -41,33 +44,82 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
+
+    /**
+     * Animiert ein Schritt, delegiert an MainCanvas
+     */
     public void animateStep(){ canvas.animateStep(); }
+
+    /**
+     * Startet volle Animation, delegiert an MainCanvas
+     */
     public void play(){canvas.play();}
+
+    /**
+     * Haelt Animation auf, delegiert an MainCanvas
+     */
     public void stop(){canvas.stop();}
+
+    /**
+     * SEtzt toggled-Stringobjekt
+     * @param label String toggled
+     */
     public void setToggled(String label){
         this.toggled = label;
     }
+
+    /**
+     * Getter, liefert toggled-Stringobjekt
+     * @return String toggled
+     */
     public String getToggled(){return this.toggled;}
+
+    /**
+     * Getter, gibt preferierte Groesse zurueck
+     * @return Dimension Groesse
+     */
     @NotNull
     @Override
     public Dimension getPreferredSize(){
         return new Dimension(1200,800);
     }
+
+    /**
+     * Setter, setzt Nachricht in MessageBar
+     * @param s String msg
+     */
     public void setMessage(String s){
         messageBar.setMessage(s);
     }
+
+    /**
+     * Setter, setzt Stats in MessageBar
+     * @param s String stats
+     */
     public void setStats(String s){
         messageBar.setStats(s);
     }
+
+    /**
+     * Schliesst das Hauptfenster
+     */
     public void close(){
         this.setVisible(false);
         this.dispose();
     }
 
+    /**
+     * Getter, liefert FileIO-Objekt aus MainCanvas zurueck
+     * @return FileIO file
+     */
     public FileIO getFile(){
         return canvas.getFile();
     }
 
+    /**
+     * Hauptmethode
+     * @param args not used
+     */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
